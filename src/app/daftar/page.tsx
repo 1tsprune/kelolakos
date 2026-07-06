@@ -41,7 +41,7 @@ export default function DaftarPage() {
   return (
     <div className="flex min-h-screen">
       <div className="relative hidden flex-1 flex-col justify-between overflow-hidden bg-[var(--ink)] p-12 lg:flex">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,85,26,0.25),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(26,107,92,0.2),transparent_60%)]" />
         <Link href="/" className="relative flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--accent)]">
             <span className="font-display text-sm font-black text-white">{site.logoLetter}</span>

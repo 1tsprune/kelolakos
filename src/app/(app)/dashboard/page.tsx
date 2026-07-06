@@ -57,9 +57,9 @@ export default async function DashboardPage() {
           <div className="min-w-[240px] rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
             <div className="flex items-center justify-between text-sm">
               <span className="flex items-center gap-1.5 font-medium text-white/60">
-                <Target className="h-4 w-4 text-orange-300" /> Target pendapatan
+                <Target className="h-4 w-4 text-[var(--accent)]" /> Target pendapatan
               </span>
-              <span className="font-bold text-orange-300">{targetPct}%</span>
+              <span className="font-bold text-[var(--accent)]">{targetPct}%</span>
             </div>
             <div className="progress-bar mt-3">
               <div style={{ width: `${targetPct}%` }} />
@@ -212,14 +212,14 @@ export default async function DashboardPage() {
       </div>
 
       {stats.overduePayments.length > 0 && (
-        <Card className="border-orange-200 bg-orange-50/30">
+        <Card className="border-amber-200 bg-amber-50/40">
           <CardHeader
             title={<span className="flex items-center gap-2"><AlertTriangle className="h-5 w-5 text-[var(--warning)]" /> Perlu Perhatian</span>}
             action={<Link href="/pembayaran" className="text-sm font-semibold text-[var(--accent)]">Kelola tagihan →</Link>}
           />
           <div className="grid gap-3 px-5 pb-5 sm:grid-cols-2">
             {stats.overduePayments.slice(0, 4).map((p) => (
-              <div key={p.id} className="rounded-xl border border-orange-100 bg-white p-4">
+              <div key={p.id} className="rounded-xl border border-amber-100 bg-white p-4">
                 <p className="font-semibold text-[var(--ink)]">{p.tenant.name}</p>
                 <p className="text-sm text-[var(--muted)]">{formatRupiah(p.amount + p.lateFee)} · Jatuh tempo {formatDate(p.dueDate)}</p>
               </div>

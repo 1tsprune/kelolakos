@@ -21,7 +21,7 @@ export default async function MulaiPage() {
         <div className="bg-[var(--ink)] px-6 py-5 text-white">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-white/60">Progress setup</span>
-            <span className="text-sm font-bold text-orange-300">{status.percent}%</span>
+            <span className="text-sm font-bold text-[var(--accent)]">{status.percent}%</span>
           </div>
           <div className="progress-bar mt-3">
             <div style={{ width: `${status.percent}%` }} />

@@ -24,7 +24,7 @@ type ReportMeta = {
 type DocWithTable = jsPDF & { lastAutoTable: { finalY: number } };
 
 const COLORS = {
-  accent: [212, 85, 26] as [number, number, number],
+  accent: [26, 107, 92] as [number, number, number],
   ink: [12, 18, 34] as [number, number, number],
   muted: [92, 100, 120] as [number, number, number],
   success: [26, 127, 75] as [number, number, number],

@@ -35,7 +35,7 @@ function LoginForm() {
   return (
     <div className="flex min-h-screen">
       <div className="relative hidden flex-1 flex-col justify-between overflow-hidden bg-[var(--ink)] p-12 lg:flex">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(232,98,26,0.3),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(26,107,92,0.22),transparent_60%)]" />
         <Link href="/" className="relative flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--accent)]">
             <span className="text-sm font-extrabold text-white">{site.logoLetter}</span>

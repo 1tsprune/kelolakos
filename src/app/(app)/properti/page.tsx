@@ -37,7 +37,7 @@ export default async function PropertiPage() {
             return (
               <Link key={property.id} href={`/properti/${property.id}`}>
                 <Card hover className="overflow-hidden">
-                  <div className="h-1.5 bg-gradient-to-r from-[var(--accent)] to-orange-300" />
+                  <div className="h-1.5 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)]" />
                   <div className="p-6">
                     <div className="flex items-start justify-between">
                       <div>

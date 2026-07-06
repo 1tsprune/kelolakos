@@ -36,7 +36,7 @@ export function DashboardMockup() {
               <div
                 key={item.l}
                 className={`mb-0.5 rounded-lg px-2.5 py-1.5 text-[10px] font-medium ${
-                  item.a ? "bg-[var(--accent)]/15 text-orange-300" : "text-white/40"
+                  item.a ? "bg-[var(--accent)]/15 text-amber-300" : "text-white/40"
                 }`}
               >
                 {item.l}
@@ -58,7 +58,7 @@ export function DashboardMockup() {
             <div className="mb-3 grid grid-cols-3 gap-1.5">
               {[
                 { l: "Terkumpul", v: "Rp 850rb", c: "text-emerald-400" },
-                { l: "Tunggakan", v: "Rp 2,1jt", c: "text-orange-300" },
+                { l: "Tunggakan", v: "Rp 2,1jt", c: "text-amber-300" },
                 { l: "Hunian", v: "60%", c: "text-white" },
               ].map((s) => (
                 <div key={s.l} className="rounded-lg bg-white/5 px-2 py-2">
@@ -69,7 +69,7 @@ export function DashboardMockup() {
             </div>
 
             <div className="mb-1 h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-[var(--accent)] to-orange-300" />
+              <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)]" />
             </div>
             <p className="mb-3 text-[8px] text-white/30">Target pendapatan Rp 10jt/bulan</p>
 
@@ -77,7 +77,7 @@ export function DashboardMockup() {
               {[38, 62, 50, 78, 68, 92].map((h, i) => (
                 <div
                   key={i}
-                  className="flex-1 rounded-t-sm bg-gradient-to-t from-[var(--accent)]/80 to-orange-400/60"
+                  className="flex-1 rounded-t-sm bg-gradient-to-t from-[var(--accent)]/80 to-teal-400/50"
                   style={{ height: `${h}%` }}
                 />
               ))}
@@ -91,7 +91,7 @@ export function DashboardMockup() {
               ].map((t) => (
                 <div key={t.n} className="flex items-center justify-between rounded-md bg-white/5 px-2.5 py-1.5">
                   <span className="text-[10px] text-white/75">{t.n}</span>
-                  <span className={`text-[9px] font-bold ${t.ok ? "text-emerald-400" : "text-orange-300"}`}>{t.s}</span>
+                  <span className={`text-[9px] font-bold ${t.ok ? "text-emerald-400" : "text-amber-300"}`}>{t.s}</span>
                 </div>
               ))}
             </div>

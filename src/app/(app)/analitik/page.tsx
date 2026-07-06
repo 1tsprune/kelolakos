@@ -39,7 +39,7 @@ export default async function AnalitikPage() {
             <p className="text-2xl font-extrabold">{formatRupiah(data.collected)} <span className="text-base font-medium text-white/40">/ {formatRupiah(data.revenueTarget)}</span></p>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-extrabold text-orange-300">{targetPct}%</p>
+            <p className="text-3xl font-extrabold text-[var(--accent)]">{targetPct}%</p>
             <p className="text-xs text-white/40">tercapai</p>
           </div>
         </div>

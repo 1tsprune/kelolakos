@@ -57,7 +57,7 @@ function buildPreview(id: string, p: LandingCopy["scrollStory"]["preview"]): Rea
               ))}
             </div>
             <div className="mt-4 space-y-2">
-              <p className="rounded-lg bg-orange-500/15 px-3 py-2 text-xs text-orange-200">{p.kalender.dueLine}</p>
+              <p className="rounded-lg bg-amber-500/15 px-3 py-2 text-xs text-amber-200">{p.kalender.dueLine}</p>
               <p className="rounded-lg bg-white/5 px-3 py-2 text-xs text-white/50">{p.kalender.contractLine}</p>
             </div>
           </div>
@@ -77,7 +77,7 @@ function buildPreview(id: string, p: LandingCopy["scrollStory"]["preview"]): Rea
                   <p className="text-sm font-semibold text-white">{r.n}</p>
                   <p className="text-xs text-white/40">{r.a}</p>
                 </div>
-                <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${r.ok ? "bg-emerald-500/20 text-emerald-300" : "bg-orange-500/20 text-orange-200"}`}>
+                <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${r.ok ? "bg-emerald-500/20 text-emerald-300" : "bg-amber-500/20 text-amber-200"}`}>
                   {r.s}
                 </span>
               </div>
@@ -94,7 +94,7 @@ function buildPreview(id: string, p: LandingCopy["scrollStory"]["preview"]): Rea
         <PreviewShell label="portal/andi">
           <div className="rounded-xl bg-white/5 p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--accent)]/30 text-sm font-bold text-orange-100">AP</div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--accent)]/30 text-sm font-bold text-teal-100">AP</div>
               <div>
                 <p className="font-bold text-white">Andi Pratama</p>
                 <p className="text-xs text-white/40">Kos Melati · Room A1</p>
@@ -157,7 +157,7 @@ function buildPreview(id: string, p: LandingCopy["scrollStory"]["preview"]): Rea
           </div>
           <div className="mt-3 flex h-14 items-end gap-1">
             {[35, 55, 48, 72, 65, 88].map((h, i) => (
-              <div key={i} className="flex-1 rounded-t bg-gradient-to-t from-[var(--accent)] to-orange-300" style={{ height: `${h}%` }} />
+              <div key={i} className="flex-1 rounded-t bg-gradient-to-t from-[var(--accent)] to-[var(--accent-light)]" style={{ height: `${h}%` }} />
             ))}
           </div>
         </PreviewShell>

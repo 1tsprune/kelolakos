@@ -30,7 +30,7 @@ const features = [
               <p className="text-sm font-semibold text-white">{r.n}</p>
               <p className="text-xs text-white/40">{r.a}</p>
             </div>
-            <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${r.ok ? "bg-[var(--success)]/20 text-[var(--success)]" : "bg-orange-500/20 text-orange-300"}`}>
+            <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${r.ok ? "bg-[var(--success)]/20 text-[var(--success)]" : "bg-amber-500/20 text-amber-300"}`}>
               {r.s}
             </span>
           </div>
@@ -51,7 +51,7 @@ const features = [
     preview: (
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
         <div className="mb-3 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent)]/30 text-sm font-bold text-orange-200">AP</div>
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent)]/30 text-sm font-bold text-teal-100">AP</div>
           <div>
             <p className="text-sm font-bold text-white">Andi Pratama</p>
             <p className="text-xs text-white/40">Kos Melati · Kamar A1</p>
@@ -140,7 +140,7 @@ const features = [
           })}
         </div>
         <div className="mt-3 space-y-1.5 text-[10px]">
-          <p className="text-orange-300">● 5 Jul — 4 tagihan jatuh tempo</p>
+          <p className="text-amber-300">● 5 Jul — 4 tagihan jatuh tempo</p>
           <p className="text-white/50">● 15 Jul — kontrak Andi habis</p>
         </div>
       </div>
@@ -158,14 +158,14 @@ const features = [
           {[35, 55, 48, 72, 65, 88].map((h, i) => (
             <div
               key={i}
-              className="flex-1 origin-bottom rounded-t-md bg-gradient-to-t from-[var(--accent)] to-orange-300 animate-[feature-in_0.5s_ease-out_both]"
+              className="flex-1 origin-bottom rounded-t-md bg-gradient-to-t from-[var(--accent)] to-[var(--accent-light)] animate-[feature-in_0.5s_ease-out_both]"
               style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }}
             />
           ))}
         </div>
         <div className="grid grid-cols-2 gap-2 text-center text-[10px]">
           <div className="rounded-lg bg-white/5 py-2"><p className="text-white/40">Terisi</p><p className="font-bold text-white">80%</p></div>
-          <div className="rounded-lg bg-white/5 py-2"><p className="text-white/40">Target bulan ini</p><p className="font-bold text-orange-300">85%</p></div>
+          <div className="rounded-lg bg-white/5 py-2"><p className="text-white/40">Target bulan ini</p><p className="font-bold text-amber-300">85%</p></div>
         </div>
       </div>
     ),

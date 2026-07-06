@@ -26,7 +26,7 @@ export function RevenueChart({ data }: { data: DataPoint[] }) {
             </span>
             <div className="flex w-full flex-1 items-end">
               <div
-                className="w-full rounded-t-lg bg-gradient-to-t from-[var(--accent)] to-orange-300 transition-all group-hover:brightness-110"
+                className="w-full rounded-t-lg bg-gradient-to-t from-[var(--accent)] to-[var(--accent-light)] transition-all group-hover:brightness-110"
                 style={{ height: barH }}
                 title={formatRupiah(d.total)}
               />
