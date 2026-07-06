@@ -1,12 +1,15 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
-import { promises as fs } from "fs";
-import path from "path";
 import type { User } from "./types";
 import { initUserSettings, newId, now } from "./store";
+import {
+  countUsers,
+  insertUser,
+  readUsers,
+  updateUserPasswordHash,
+} from "./users-store";
 
-const USERS_FILE = path.join(process.cwd(), "data", "users.json");
 function getAuthSecret(): Uint8Array {
   const secret = process.env.AUTH_SECRET;
   if (!secret && process.env.NODE_ENV === "production") {
@@ -20,34 +23,23 @@ const COOKIE = "koskit_session";
 
 type SessionPayload = { userId: string; email: string; name: string };
 
-async function readUsers(): Promise<User[]> {
-  try {
-    const raw = await fs.readFile(USERS_FILE, "utf-8");
-    return JSON.parse(raw) as User[];
-  } catch {
-    return [];
-  }
-}
-
-async function writeUsers(users: User[]): Promise<void> {
-  await fs.mkdir(path.dirname(USERS_FILE), { recursive: true });
-  await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
-}
-
 export async function ensureDefaultUser(): Promise<void> {
-  const users = await readUsers();
-  if (users.length > 0) return;
+  if ((await countUsers()) > 0) return;
   const hash = await bcrypt.hash("password123", 10);
-  await writeUsers([
-    {
-      id: "user_budi",
-      name: "Pak Budi",
-      email: "budi@kosmelati.id",
-      passwordHash: hash,
-      phone: "081234567890",
-      createdAt: now(),
-    },
-  ]);
+  const user: User = {
+    id: "user_budi",
+    name: "Pak Budi",
+    email: "budi@kosmelati.id",
+    passwordHash: hash,
+    phone: "081234567890",
+    createdAt: now(),
+  };
+  await insertUser(user);
+  await initUserSettings(user.id, {
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+  });
 }
 
 export async function registerUser(data: {
@@ -67,7 +59,7 @@ export async function registerUser(data: {
   }
   const hash = await bcrypt.hash(data.password, 10);
   const userId = newId();
-  users.push({
+  await insertUser({
     id: userId,
     name: data.name,
     email,
@@ -75,7 +67,6 @@ export async function registerUser(data: {
     phone: data.phone,
     createdAt: now(),
   });
-  await writeUsers(users);
   await initUserSettings(userId, data);
   return { ok: true };
 }
@@ -86,7 +77,7 @@ export async function loginUser(
 ): Promise<{ ok: boolean; user?: User; error?: string }> {
   await ensureDefaultUser();
   const users = await readUsers();
-  const user = users.find((u) => u.email === email);
+  const user = users.find((u) => u.email.toLowerCase() === email.trim().toLowerCase());
   if (!user) return { ok: false, error: "Email atau password salah" };
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) return { ok: false, error: "Email atau password salah" };
@@ -153,10 +144,9 @@ export async function updateUserPassword(
   email: string,
   newPassword: string,
 ): Promise<{ ok: boolean; error?: string }> {
-  const users = await readUsers();
-  const idx = users.findIndex((u) => u.email.toLowerCase() === email.trim().toLowerCase());
-  if (idx < 0) return { ok: false, error: "User tidak ditemukan" };
-  users[idx].passwordHash = await bcrypt.hash(newPassword, 10);
-  await writeUsers(users);
+  const hash = await bcrypt.hash(newPassword, 10);
+  const ok = await updateUserPasswordHash(email, hash);
+  if (!ok) return { ok: false, error: "User tidak ditemukan" };
   return { ok: true };
 }
+

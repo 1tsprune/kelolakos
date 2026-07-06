@@ -23,7 +23,21 @@ npm run start
 
 **Vercel:** connect repo GitHub → set env vars → deploy.
 
-**Catatan storage:** v0.1 memakai `data/koskit.json`. Di Vercel (serverless) file system **tidak persisten** — wajib migrasi ke PostgreSQL sebelum production serius. Lihat `supabase/schema.sql`.
+**Storage:** Set `DATABASE_URL` ke Supabase PostgreSQL untuk production. Tanpa itu, app fallback ke `data/koskit.json` (hanya untuk development lokal).
+
+### Setup Supabase
+
+1. Buat project di [supabase.com](https://supabase.com)
+2. SQL Editor → paste & jalankan `supabase/schema.sql`
+3. Project Settings → Database → **Connection string** (URI)
+   - Vercel/serverless: pakai **Transaction** pooler (port 6543)
+   - VPS: bisa pakai **Session** mode (port 5432)
+4. Set `DATABASE_URL` di `.env` / Vercel env vars
+5. Migrasi data demo:
+   ```bash
+   npm run db:migrate
+   ```
+6. Restart app — semua `readDb`/`writeDb` otomatis ke Postgres
 
 ## 3. Domain & HTTPS
 

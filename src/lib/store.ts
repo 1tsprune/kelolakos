@@ -87,15 +87,33 @@ export async function initUserSettings(
   await writeDb(db);
 }
 
-export async function readDb(): Promise<Database> {
+async function readDbFromJson(): Promise<Database> {
   await ensureDataFile();
   const raw = JSON.parse(await fs.readFile(DATA_FILE, "utf-8")) as Partial<Database>;
   return migrateDb(raw);
 }
 
-export async function writeDb(db: Database): Promise<void> {
+async function writeDbToJson(db: Database): Promise<void> {
   await ensureDataFile();
   await fs.writeFile(DATA_FILE, JSON.stringify(db, null, 2), "utf-8");
+}
+
+export async function readDb(): Promise<Database> {
+  const { isPostgresEnabled } = await import("./pg");
+  if (isPostgresEnabled()) {
+    const { readDbFromPostgres } = await import("./postgres-store");
+    return readDbFromPostgres();
+  }
+  return readDbFromJson();
+}
+
+export async function writeDb(db: Database): Promise<void> {
+  const { isPostgresEnabled } = await import("./pg");
+  if (isPostgresEnabled()) {
+    const { writeDbToPostgres } = await import("./postgres-store");
+    return writeDbToPostgres(db);
+  }
+  return writeDbToJson(db);
 }
 
 export function newId(): string {

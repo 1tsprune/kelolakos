@@ -42,7 +42,7 @@ Landing page tersedia dalam **Bahasa Indonesia** dan **English** (toggle ID/EN d
 - **Framework:** Next.js 16 (App Router)
 - **UI:** React 19, Tailwind CSS v4
 - **Auth:** JWT session (httpOnly cookie) + bcrypt
-- **Storage:** JSON file (`data/koskit.json`) — lihat [Migrasi database](#migrasi-database-production)
+- **Storage:** Supabase PostgreSQL (production) atau JSON file (development)
 - **PDF:** jsPDF + jspdf-autotable
 - **Payments:** Midtrans Snap API
 - **WhatsApp:** Fonnte API
@@ -138,11 +138,17 @@ Variabel environment: lihat [.env.example](.env.example)
 
 ---
 
-## Migrasi database (production)
+## Database (Supabase)
 
-Versi saat ini memakai **JSON file storage** — cocok untuk development dan demo.
+Set `DATABASE_URL` di `.env` → app otomatis pakai **PostgreSQL**. Tanpa itu, fallback ke `data/koskit.json` (dev lokal).
 
-Untuk production multi-tenant, migrasi ke **PostgreSQL (Supabase)** direkomendasikan. Schema awal tersedia di [`supabase/schema.sql`](supabase/schema.sql).
+```bash
+# 1. Jalankan supabase/schema.sql di SQL Editor Supabase
+# 2. Set DATABASE_URL di .env
+npm run db:migrate   # impor data dari koskit.json
+```
+
+Lihat [`docs/DEPLOY.md`](docs/DEPLOY.md) untuk detail connection string & pooler.
 
 ---
 
@@ -154,6 +160,7 @@ Untuk production multi-tenant, migrasi ke **PostgreSQL (Supabase)** direkomendas
 | `npm run build` | Build production |
 | `npm run start` | Jalankan build |
 | `npm run lint` | ESLint |
+| `npm run db:migrate` | Impor JSON → Supabase Postgres |
 
 ---
 
@@ -165,7 +172,7 @@ Untuk production multi-tenant, migrasi ke **PostgreSQL (Supabase)** direkomendas
 - [x] Laporan PDF polished
 - [x] Forgot password + email (Resend)
 - [x] Halaman legal (privasi & syarat)
-- [ ] PostgreSQL / Supabase adapter
+- [x] PostgreSQL / Supabase adapter
 - [ ] Billing langganan Midtrans Subscription
 - [ ] Staff roles & permissions
 - [ ] Sentry error monitoring
