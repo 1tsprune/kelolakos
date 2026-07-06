@@ -1,0 +1,561 @@
+{
+  "properties": [
+    {
+      "id": "prop1kosmelati",
+      "userId": "user_budi",
+      "name": "Kos Melati",
+      "address": "Jl. Melati No. 12, Cibeunying",
+      "city": "Bandung",
+      "ownerName": "Pak Budi",
+      "ownerPhone": "081234567890",
+      "notes": "Dekat kampus ITB",
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    },
+    {
+      "id": "prop2kostputri",
+      "userId": "user_budi",
+      "name": "Kost Putri Anggrek",
+      "address": "Jl. Anggrek Raya 5",
+      "city": "Depok",
+      "ownerName": "Bu Siti",
+      "ownerPhone": "081298765432",
+      "notes": null,
+      "createdAt": "2026-02-01T08:00:00.000Z",
+      "updatedAt": "2026-02-01T08:00:00.000Z"
+    }
+  ],
+  "rooms": [
+    {
+      "id": "room_a1",
+      "propertyId": "prop1kosmelati",
+      "number": "A1",
+      "floor": 1,
+      "monthlyRent": 850000,
+      "status": "terisi",
+      "electricityType": "termasuk",
+      "facilities": [
+        "AC",
+        "WiFi",
+        "Kamar Mandi Dalam"
+      ],
+      "notes": null,
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z",
+      "photoUrl": null
+    },
+    {
+      "id": "room_a2",
+      "propertyId": "prop1kosmelati",
+      "number": "A2",
+      "floor": 1,
+      "monthlyRent": 850000,
+      "status": "terisi",
+      "electricityType": "termasuk",
+      "facilities": [
+        "AC",
+        "WiFi"
+      ],
+      "notes": null,
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z",
+      "photoUrl": null
+    },
+    {
+      "id": "room_b1",
+      "propertyId": "prop1kosmelati",
+      "number": "B1",
+      "floor": 2,
+      "monthlyRent": 900000,
+      "status": "kosong",
+      "electricityType": "meteran",
+      "facilities": [
+        "AC",
+        "Balkon"
+      ],
+      "notes": null,
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z",
+      "photoUrl": null
+    },
+    {
+      "id": "room_101",
+      "propertyId": "prop2kostputri",
+      "number": "101",
+      "floor": 1,
+      "monthlyRent": 1200000,
+      "status": "maintenance",
+      "electricityType": "termasuk",
+      "facilities": [
+        "AC",
+        "WiFi",
+        "Kulkas"
+      ],
+      "notes": null,
+      "createdAt": "2026-02-01T08:00:00.000Z",
+      "updatedAt": "2026-07-06T17:25:15.069Z",
+      "photoUrl": null
+    },
+    {
+      "id": "room_102",
+      "propertyId": "prop2kostputri",
+      "number": "102",
+      "floor": 1,
+      "monthlyRent": 1200000,
+      "status": "maintenance",
+      "electricityType": "termasuk",
+      "facilities": [
+        "AC",
+        "WiFi"
+      ],
+      "notes": "Sedang perbaikan atap",
+      "createdAt": "2026-02-01T08:00:00.000Z",
+      "updatedAt": "2026-07-01T08:00:00.000Z",
+      "photoUrl": null
+    }
+  ],
+  "tenants": [
+    {
+      "id": "tenant_andi",
+      "roomId": "room_a1",
+      "portalToken": "portal_andi_demo",
+      "ktpPhotoUrl": null,
+      "name": "Andi Pratama",
+      "phone": "08111222333",
+      "ktp": "3273012345670001",
+      "checkIn": "2026-04-01T00:00:00.000Z",
+      "checkOut": null,
+      "contractEndDate": "2027-04-01T00:00:00.000Z",
+      "emergencyContact": "08111444555",
+      "depositAmount": 850000,
+      "depositStatus": "ditahan",
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2026-04-01T08:00:00.000Z",
+      "updatedAt": "2026-04-01T08:00:00.000Z"
+    },
+    {
+      "id": "tenant_rina",
+      "roomId": "room_a2",
+      "portalToken": "portal_rina_demo",
+      "ktpPhotoUrl": null,
+      "name": "Rina Wulandari",
+      "phone": "08122333444",
+      "ktp": "3273012345670002",
+      "checkIn": "2026-06-15T00:00:00.000Z",
+      "checkOut": null,
+      "contractEndDate": "2026-07-20T00:00:00.000Z",
+      "emergencyContact": null,
+      "depositAmount": 500000,
+      "depositStatus": "ditahan",
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2026-06-15T08:00:00.000Z",
+      "updatedAt": "2026-06-15T08:00:00.000Z"
+    },
+    {
+      "id": "tenant_dewi",
+      "roomId": "room_101",
+      "portalToken": "portal_dewi_demo",
+      "ktpPhotoUrl": null,
+      "name": "Dewi Lestari",
+      "phone": "08133444555",
+      "ktp": null,
+      "checkIn": "2026-03-01T00:00:00.000Z",
+      "checkOut": null,
+      "contractEndDate": "2026-08-01T00:00:00.000Z",
+      "emergencyContact": null,
+      "depositAmount": 1200000,
+      "depositStatus": "ditahan",
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2026-03-01T08:00:00.000Z",
+      "updatedAt": "2026-03-01T08:00:00.000Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay_andi_jul",
+      "tenantId": "tenant_andi",
+      "roomId": "room_a1",
+      "periodMonth": 7,
+      "periodYear": 2026,
+      "amount": 850000,
+      "lateFee": 0,
+      "dueDate": "2026-07-05T00:00:00.000Z",
+      "paidAt": "2026-07-03T10:00:00.000Z",
+      "status": "lunas",
+      "notes": null,
+      "createdAt": "2026-07-01T08:00:00.000Z",
+      "updatedAt": "2026-07-03T10:00:00.000Z",
+      "proofPhotoUrl": null,
+      "midtransOrderId": null
+    },
+    {
+      "id": "pay_rina_jul",
+      "tenantId": "tenant_rina",
+      "roomId": "room_a2",
+      "periodMonth": 7,
+      "periodYear": 2026,
+      "amount": 850000,
+      "lateFee": 42500,
+      "dueDate": "2026-07-05T00:00:00.000Z",
+      "paidAt": "2026-07-06T17:44:05.634Z",
+      "status": "lunas",
+      "notes": null,
+      "createdAt": "2026-07-01T08:00:00.000Z",
+      "updatedAt": "2026-07-06T17:44:05.634Z",
+      "proofPhotoUrl": null,
+      "midtransOrderId": "KOS-rina_jul-mr9gzhs0"
+    },
+    {
+      "id": "pay_dewi_jul",
+      "tenantId": "tenant_dewi",
+      "roomId": "room_101",
+      "periodMonth": 7,
+      "periodYear": 2026,
+      "amount": 1200000,
+      "lateFee": 60000,
+      "dueDate": "2026-07-05T00:00:00.000Z",
+      "paidAt": "2026-07-06T17:44:08.857Z",
+      "status": "lunas",
+      "notes": null,
+      "createdAt": "2026-07-01T08:00:00.000Z",
+      "updatedAt": "2026-07-06T17:44:08.857Z",
+      "proofPhotoUrl": null,
+      "midtransOrderId": null
+    },
+    {
+      "id": "pay_andi_jun",
+      "tenantId": "tenant_andi",
+      "roomId": "room_a1",
+      "periodMonth": 6,
+      "periodYear": 2026,
+      "amount": 850000,
+      "lateFee": 0,
+      "dueDate": "2026-06-05T00:00:00.000Z",
+      "paidAt": "2026-06-04T10:00:00.000Z",
+      "status": "lunas",
+      "notes": null,
+      "createdAt": "2026-06-01T08:00:00.000Z",
+      "updatedAt": "2026-06-04T10:00:00.000Z",
+      "proofPhotoUrl": null,
+      "midtransOrderId": null
+    },
+    {
+      "id": "pay_andi_may",
+      "tenantId": "tenant_andi",
+      "roomId": "room_a1",
+      "periodMonth": 5,
+      "periodYear": 2026,
+      "amount": 850000,
+      "lateFee": 0,
+      "dueDate": "2026-05-05T00:00:00.000Z",
+      "paidAt": "2026-05-03T10:00:00.000Z",
+      "status": "lunas",
+      "notes": null,
+      "createdAt": "2026-05-01T08:00:00.000Z",
+      "updatedAt": "2026-05-03T10:00:00.000Z",
+      "proofPhotoUrl": null,
+      "midtransOrderId": null
+    },
+    {
+      "id": "pay_andi_apr",
+      "tenantId": "tenant_andi",
+      "roomId": "room_a1",
+      "periodMonth": 4,
+      "periodYear": 2026,
+      "amount": 850000,
+      "lateFee": 0,
+      "dueDate": "2026-04-05T00:00:00.000Z",
+      "paidAt": "2026-04-05T10:00:00.000Z",
+      "status": "lunas",
+      "notes": null,
+      "createdAt": "2026-04-01T08:00:00.000Z",
+      "updatedAt": "2026-04-05T10:00:00.000Z",
+      "proofPhotoUrl": null,
+      "midtransOrderId": null
+    }
+  ],
+  "utilityBills": [
+    {
+      "id": "util_a1_jul",
+      "roomId": "room_a1",
+      "tenantId": "tenant_andi",
+      "type": "listrik",
+      "periodMonth": 7,
+      "periodYear": 2026,
+      "meterStart": 1200,
+      "meterEnd": 1285,
+      "ratePerUnit": 1500,
+      "amount": 127500,
+      "status": "belum",
+      "paidAt": null,
+      "createdAt": "2026-07-02T08:00:00.000Z",
+      "updatedAt": "2026-07-02T08:00:00.000Z"
+    },
+    {
+      "id": "util_a2_jul",
+      "roomId": "room_a2",
+      "tenantId": "tenant_rina",
+      "type": "air",
+      "periodMonth": 7,
+      "periodYear": 2026,
+      "meterStart": 50,
+      "meterEnd": 58,
+      "ratePerUnit": 8000,
+      "amount": 64000,
+      "status": "lunas",
+      "paidAt": "2026-07-04T08:00:00.000Z",
+      "createdAt": "2026-07-02T08:00:00.000Z",
+      "updatedAt": "2026-07-04T08:00:00.000Z"
+    }
+  ],
+  "maintenanceTickets": [
+    {
+      "id": "mnt_atap",
+      "propertyId": "prop2kostputri",
+      "roomId": "room_102",
+      "title": "Atap bocor",
+      "description": "Rembes saat hujan deras, perlu perbaikan segera",
+      "priority": "tinggi",
+      "status": "progress",
+      "reportedBy": "Dewi Lestari",
+      "assignedTo": "Tukang Budi",
+      "cost": 750000,
+      "createdAt": "2026-07-01T08:00:00.000Z",
+      "updatedAt": "2026-07-03T08:00:00.000Z",
+      "resolvedAt": null
+    },
+    {
+      "id": "mnt_kran",
+      "propertyId": "prop1kosmelati",
+      "roomId": "room_a1",
+      "title": "Keran bocor",
+      "description": "Kran wastafel kamar A1 menetes terus",
+      "priority": "sedang",
+      "status": "open",
+      "reportedBy": "Andi Pratama",
+      "assignedTo": null,
+      "cost": null,
+      "createdAt": "2026-07-05T08:00:00.000Z",
+      "updatedAt": "2026-07-05T08:00:00.000Z",
+      "resolvedAt": null
+    }
+  ],
+  "expenses": [
+    {
+      "id": "exp1",
+      "propertyId": "prop1kosmelati",
+      "category": "kebersihan",
+      "description": "Gaji ibu pembersih bulan Juli",
+      "amount": 500000,
+      "date": "2026-07-01T08:00:00.000Z",
+      "createdAt": "2026-07-01T08:00:00.000Z"
+    },
+    {
+      "id": "exp2",
+      "propertyId": "prop2kostputri",
+      "category": "perbaikan",
+      "description": "DP perbaikan atap kamar 102",
+      "amount": 350000,
+      "date": "2026-07-02T08:00:00.000Z",
+      "createdAt": "2026-07-02T08:00:00.000Z"
+    },
+    {
+      "id": "exp3",
+      "propertyId": "prop1kosmelati",
+      "category": "listrik",
+      "description": "Token listrik area umum",
+      "amount": 200000,
+      "date": "2026-07-03T08:00:00.000Z",
+      "createdAt": "2026-07-03T08:00:00.000Z"
+    }
+  ],
+  "activities": [
+    {
+      "id": "mr9ieq3d76crzwl",
+      "type": "payment",
+      "message": "Pembayaran lunas: Dewi Lestari",
+      "entityType": "payment",
+      "entityId": "pay_dewi_jul",
+      "createdAt": "2026-07-06T17:44:08.857Z"
+    },
+    {
+      "id": "mr9ienlulkls29y",
+      "type": "payment",
+      "message": "Pembayaran lunas: Rina Wulandari",
+      "entityType": "payment",
+      "entityId": "pay_rina_jul",
+      "createdAt": "2026-07-06T17:44:05.634Z"
+    },
+    {
+      "id": "mr9hqf99brj5a83",
+      "type": "property",
+      "message": "Status kamar 101 → maintenance",
+      "entityType": "room",
+      "entityId": "room_101",
+      "createdAt": "2026-07-06T17:25:15.070Z"
+    },
+    {
+      "id": "mr9hq00hdycdbv7",
+      "type": "payment",
+      "message": "Denda otomatis diterapkan ke 1 tagihan",
+      "entityType": "system",
+      "entityId": "late-fees",
+      "createdAt": "2026-07-06T17:24:55.313Z"
+    },
+    {
+      "id": "act1",
+      "type": "payment",
+      "message": "Pembayaran lunas: Andi Pratama",
+      "entityType": "payment",
+      "entityId": "pay_andi_jul",
+      "createdAt": "2026-07-03T10:00:00.000Z"
+    },
+    {
+      "id": "act2",
+      "type": "maintenance",
+      "message": "Tiket baru: Keran bocor",
+      "entityType": "maintenance",
+      "entityId": "mnt_kran",
+      "createdAt": "2026-07-05T08:00:00.000Z"
+    },
+    {
+      "id": "act3",
+      "type": "utility",
+      "message": "Tagihan listrik kamar A1: Rp 127.500",
+      "entityType": "utility",
+      "entityId": "util_a1_jul",
+      "createdAt": "2026-07-02T08:00:00.000Z"
+    },
+    {
+      "id": "act4",
+      "type": "expense",
+      "message": "Pengeluaran: Gaji ibu pembersih bulan Juli (Rp 500.000)",
+      "entityType": "expense",
+      "entityId": "exp1",
+      "createdAt": "2026-07-01T08:00:00.000Z"
+    },
+    {
+      "id": "act5",
+      "type": "tenant",
+      "message": "Penyewa baru: Rina Wulandari masuk kamar A2",
+      "entityType": "tenant",
+      "entityId": "tenant_rina",
+      "createdAt": "2026-06-15T08:00:00.000Z"
+    }
+  ],
+  "whatsappLogs": [],
+  "inventoryItems": [
+    {
+      "id": "inv1",
+      "roomId": "room_a1",
+      "name": "AC Split 1/2 PK",
+      "condition": "baik",
+      "quantity": 1,
+      "value": 3500000,
+      "notes": "Sharp",
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    },
+    {
+      "id": "inv2",
+      "roomId": "room_a1",
+      "name": "Kasur Springbed",
+      "condition": "baik",
+      "quantity": 1,
+      "value": 2000000,
+      "notes": null,
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    },
+    {
+      "id": "inv3",
+      "roomId": "room_a2",
+      "name": "Lemari 2 Pintu",
+      "condition": "rusak_ringan",
+      "quantity": 1,
+      "value": 800000,
+      "notes": "Engsel perlu perbaikan",
+      "createdAt": "2026-02-01T08:00:00.000Z",
+      "updatedAt": "2026-02-01T08:00:00.000Z"
+    },
+    {
+      "id": "inv4",
+      "roomId": "room_101",
+      "name": "Kulkas Mini",
+      "condition": "baik",
+      "quantity": 1,
+      "value": 1500000,
+      "notes": null,
+      "createdAt": "2026-02-01T08:00:00.000Z",
+      "updatedAt": "2026-02-01T08:00:00.000Z"
+    }
+  ],
+  "waitlistEntries": [
+    {
+      "id": "wl1",
+      "propertyId": "prop1kosmelati",
+      "name": "Budi Santoso",
+      "phone": "08155666777",
+      "budget": 900000,
+      "preferredRoom": "B1",
+      "moveInDate": "2026-07-15T00:00:00.000Z",
+      "status": "menunggu",
+      "notes": "Mahasiswa ITB, butuh AC",
+      "createdAt": "2026-07-01T08:00:00.000Z",
+      "updatedAt": "2026-07-01T08:00:00.000Z"
+    },
+    {
+      "id": "wl2",
+      "propertyId": "prop1kosmelati",
+      "name": "Sari Indah",
+      "phone": "08166777888",
+      "budget": 850000,
+      "preferredRoom": null,
+      "moveInDate": "2026-08-01T00:00:00.000Z",
+      "status": "dihubungi",
+      "notes": "Referensi dari Andi",
+      "createdAt": "2026-06-28T08:00:00.000Z",
+      "updatedAt": "2026-07-04T08:00:00.000Z"
+    },
+    {
+      "id": "wl3",
+      "propertyId": "prop2kostputri",
+      "name": "Maya Putri",
+      "phone": "08177888999",
+      "budget": 1200000,
+      "preferredRoom": "102",
+      "moveInDate": null,
+      "status": "menunggu",
+      "notes": "Tunggu kamar 102 selesai perbaikan",
+      "createdAt": "2026-07-03T08:00:00.000Z",
+      "updatedAt": "2026-07-03T08:00:00.000Z"
+    }
+  ],
+  "settings": {
+    "user_budi": {
+      "reminderDaysBefore": 3,
+      "lateFeePercent": 5,
+      "dueDayOfMonth": 5,
+      "monthlyRevenueTarget": 10000000,
+      "ownerEmail": "budi@kosmelati.id",
+      "businessName": "Kos Melati Group",
+      "ownerPhone": "081234567890",
+      "appUrl": "http://localhost:3000",
+      "whatsappTemplate": "default",
+      "whatsappApiKey": "",
+      "whatsappProvider": "fonnte",
+      "midtransServerKey": "",
+      "midtransClientKey": "",
+      "midtransIsProduction": false,
+      "defaultDeposit": 500000,
+      "electricityRate": 1500,
+      "waterRate": 5000,
+      "autoReminderEnabled": true,
+      "portalWelcomeMessage": "Selamat datang di portal penyewa. Bayar tagihan dan laporkan masalah di sini.",
+      "onboardingCompleted": true
+    }
+  }
+}
