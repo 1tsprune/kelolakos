@@ -106,7 +106,7 @@ export function Sidebar({ open, onClose, className = "" }: { open: boolean; onCl
                     href={item.href}
                     onClick={onClose}
                     className={`mb-0.5 flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-semibold transition-all ${
-                      active ? "sidebar-link-active text-teal-300" : "text-white/55 hover:bg-white/5 hover:text-white/90"
+                      active ? "sidebar-link-active text-blue-300" : "text-white/55 hover:bg-white/5 hover:text-white/90"
                     }`}
                   >
                     <Icon className="h-4 w-4 shrink-0" />

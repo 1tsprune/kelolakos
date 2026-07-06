@@ -45,10 +45,10 @@ export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; e
 export function welcomeEmailHtml(name: string): string {
   return `
     <div style="font-family:sans-serif;max-width:520px;margin:0 auto;color:#0c1222">
-      <h1 style="color:#1a6b5c">Selamat datang di ${site.name}!</h1>
+      <h1 style="color:#1d5da8">Selamat datang di ${site.name}!</h1>
       <p>Halo <strong>${name}</strong>,</p>
       <p>Akun kamu sudah aktif dengan <strong>trial 14 hari</strong>. Mulai dengan menambahkan properti kos pertama di dashboard.</p>
-      <p><a href="${site.url}/mulai" style="display:inline-block;background:#1a6b5c;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold">Mulai Setup</a></p>
+      <p><a href="${site.url}/mulai" style="display:inline-block;background:#1d5da8;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold">Mulai Setup</a></p>
       <p style="color:#5c6478;font-size:13px">Butuh bantuan? Balas email ini atau hubungi ${site.contactEmail}</p>
     </div>
   `;
@@ -57,10 +57,10 @@ export function welcomeEmailHtml(name: string): string {
 export function resetPasswordEmailHtml(name: string, resetUrl: string): string {
   return `
     <div style="font-family:sans-serif;max-width:520px;margin:0 auto;color:#0c1222">
-      <h1 style="color:#1a6b5c">Reset Password</h1>
+      <h1 style="color:#1d5da8">Reset Password</h1>
       <p>Halo <strong>${name}</strong>,</p>
       <p>Kami menerima permintaan reset password untuk akun ${site.name} kamu. Klik tombol di bawah (berlaku 1 jam):</p>
-      <p><a href="${resetUrl}" style="display:inline-block;background:#1a6b5c;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold">Reset Password</a></p>
+      <p><a href="${resetUrl}" style="display:inline-block;background:#1d5da8;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold">Reset Password</a></p>
       <p style="color:#5c6478;font-size:13px">Kalau kamu tidak meminta ini, abaikan email ini.</p>
     </div>
   `;

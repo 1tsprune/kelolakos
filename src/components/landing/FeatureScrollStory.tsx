@@ -94,7 +94,7 @@ function buildPreview(id: string, p: LandingCopy["scrollStory"]["preview"]): Rea
         <PreviewShell label="portal/andi">
           <div className="rounded-xl bg-white/5 p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--accent)]/30 text-sm font-bold text-teal-100">AP</div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--accent)]/30 text-sm font-bold text-blue-100">AP</div>
               <div>
                 <p className="font-bold text-white">Andi Pratama</p>
                 <p className="text-xs text-white/40">Kos Melati · Room A1</p>

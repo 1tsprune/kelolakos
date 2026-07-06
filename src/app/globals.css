@@ -7,13 +7,13 @@
   --paper: #f6f3ec;
   --paper-dark: #ebe5d8;
   --surface: #ffffff;
-  --accent: #1a6b5c;
-  --accent-hover: #145749;
-  --accent-light: #4a9b8e;
-  --accent-soft: #e8f4f1;
-  --accent-glow: rgba(26, 107, 92, 0.28);
-  --teal: #1a6b5c;
-  --teal-soft: #dceee9;
+  --accent: #1d5da8;
+  --accent-hover: #164a88;
+  --accent-light: #5b9fd9;
+  --accent-soft: #e8f1fa;
+  --accent-glow: rgba(29, 93, 168, 0.28);
+  --teal: #1d5da8;
+  --teal-soft: #e8f1fa;
   --success: #1a7f4b;
   --danger: #c53030;
   --warning: #b45309;
@@ -133,7 +133,7 @@ input, select, textarea { color: var(--ink); }
   height: 280px;
   top: 10%;
   right: 15%;
-  background: rgba(26, 107, 92, 0.22);
+  background: rgba(29, 93, 168, 0.2);
   animation-delay: 0s;
 }
 .hero-orb-2 {
@@ -141,7 +141,7 @@ input, select, textarea { color: var(--ink); }
   height: 200px;
   bottom: 20%;
   left: 5%;
-  background: rgba(26, 107, 92, 0.2);
+  background: rgba(91, 159, 217, 0.18);
   animation-delay: -3s;
 }
 
@@ -282,8 +282,8 @@ input, select, textarea { color: var(--ink); }
 }
 
 .sidebar-link-active {
-  background: rgba(26, 107, 92, 0.14);
-  color: #8fd4c4;
+  background: rgba(29, 93, 168, 0.14);
+  color: #93c5fd;
   border-left: 3px solid var(--accent-light);
 }
 

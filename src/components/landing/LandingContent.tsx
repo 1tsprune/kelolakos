@@ -59,7 +59,7 @@ export function LandingContent() {
         <div className="hero-grid absolute inset-0" />
         <div className="hero-orb hero-orb-1" />
         <div className="hero-orb hero-orb-2" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_0%,rgba(26,107,92,0.14),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_0%,rgba(29,93,168,0.14),transparent)]" />
 
         <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 py-16 lg:grid-cols-2 lg:py-24">
           <div className="animate-fade-up">
@@ -252,7 +252,7 @@ export function LandingContent() {
 
       <section className="relative overflow-hidden bg-[var(--ink)] py-24 grain">
         <div className="hero-orb hero-orb-1 opacity-60" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(26,107,92,0.12),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(29,93,168,0.12),transparent_70%)]" />
         <ScrollReveal>
           <div className="relative mx-auto max-w-3xl px-6 text-center">
             <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">{t.cta.title}</h2>

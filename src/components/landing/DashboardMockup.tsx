@@ -77,7 +77,7 @@ export function DashboardMockup() {
               {[38, 62, 50, 78, 68, 92].map((h, i) => (
                 <div
                   key={i}
-                  className="flex-1 rounded-t-sm bg-gradient-to-t from-[var(--accent)]/80 to-teal-400/50"
+                  className="flex-1 rounded-t-sm bg-gradient-to-t from-[var(--accent)]/80 to-blue-400/50"
                   style={{ height: `${h}%` }}
                 />
               ))}

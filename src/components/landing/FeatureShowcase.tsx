@@ -51,7 +51,7 @@ const features = [
     preview: (
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
         <div className="mb-3 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent)]/30 text-sm font-bold text-teal-100">AP</div>
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent)]/30 text-sm font-bold text-blue-100">AP</div>
           <div>
             <p className="text-sm font-bold text-white">Andi Pratama</p>
             <p className="text-xs text-white/40">Kos Melati · Kamar A1</p>
