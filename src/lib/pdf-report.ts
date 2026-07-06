@@ -2,7 +2,16 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { getReportData } from "./queries";
 import { site } from "./site";
-import { formatMonthYear, formatRupiah } from "./utils";
+import { formatMonthYear } from "./utils";
+
+/** Format aman untuk jsPDF — hindari karakter unicode dari Intl currency */
+function formatRupiahPdf(amount: number): string {
+  const sign = amount < 0 ? "-" : "";
+  const value = Math.abs(Math.round(amount))
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${sign}Rp ${value}`;
+}
 
 type ReportData = Awaited<ReturnType<typeof getReportData>>;
 
@@ -96,10 +105,10 @@ function drawKpiCards(
       : 0;
 
   const cards = [
-    { label: "Target Sewa", value: formatRupiah(report.totalExpected), color: COLORS.ink },
-    { label: "Terkumpul", value: formatRupiah(report.totalCollected), color: COLORS.success },
-    { label: "Belum Lunas", value: formatRupiah(report.totalPending), color: COLORS.danger },
-    { label: "Laba Bersih", value: formatRupiah(report.netIncome), color: report.netIncome >= 0 ? COLORS.success : COLORS.danger },
+    { label: "Target Sewa", value: formatRupiahPdf(report.totalExpected), color: COLORS.ink },
+    { label: "Terkumpul", value: formatRupiahPdf(report.totalCollected), color: COLORS.success },
+    { label: "Belum Lunas", value: formatRupiahPdf(report.totalPending), color: COLORS.danger },
+    { label: "Laba Bersih", value: formatRupiahPdf(report.netIncome), color: report.netIncome >= 0 ? COLORS.success : COLORS.danger },
   ];
 
   const gap = 4;
@@ -139,7 +148,7 @@ function drawKpiCards(
   doc.setFontSize(8);
   doc.setTextColor(...COLORS.muted);
   doc.text(
-    `Pengeluaran operasional: ${formatRupiah(report.totalExpenses)}`,
+    `Pengeluaran operasional: ${formatRupiahPdf(report.totalExpenses)}`,
     MARGIN + 58,
     startY + cardH + 11.5,
   );
@@ -197,7 +206,7 @@ export function generateReportPdf(report: ReportData, meta: ReportMeta): Uint8Ar
       const revenue = property.rooms
         .filter((r) => r.status === "terisi")
         .reduce((s, r) => s + r.monthlyRent, 0);
-      return [property.name, `${occupied}/${total}`, `${occupancy}%`, formatRupiah(revenue)];
+      return [property.name, `${occupied}/${total}`, `${occupancy}%`, formatRupiahPdf(revenue)];
     });
 
     autoTable(doc, {
@@ -219,7 +228,7 @@ export function generateReportPdf(report: ReportData, meta: ReportMeta): Uint8Ar
   const paymentsBody = report.payments.map((p) => [
     p.tenant.name,
     `${p.room.property.name} / ${p.room.number}`,
-    formatRupiah(p.amount),
+    formatRupiahPdf(p.amount),
     paymentStatusLabel(p.status),
   ]);
 
@@ -230,12 +239,12 @@ export function generateReportPdf(report: ReportData, meta: ReportMeta): Uint8Ar
     foot: [
       [
         { content: "Total Terkumpul", colSpan: 2, styles: { fontStyle: "bold", fillColor: COLORS.paper } },
-        { content: formatRupiah(report.totalCollected), styles: { fontStyle: "bold", halign: "right", textColor: COLORS.success } },
+        { content: formatRupiahPdf(report.totalCollected), styles: { fontStyle: "bold", halign: "right", textColor: COLORS.success } },
         "",
       ],
       [
         { content: "Total Belum Lunas", colSpan: 2, styles: { fontStyle: "bold", fillColor: COLORS.paper } },
-        { content: formatRupiah(report.totalPending), styles: { fontStyle: "bold", halign: "right", textColor: COLORS.danger } },
+        { content: formatRupiahPdf(report.totalPending), styles: { fontStyle: "bold", halign: "right", textColor: COLORS.danger } },
         "",
       ],
     ],
@@ -269,10 +278,10 @@ export function generateReportPdf(report: ReportData, meta: ReportMeta): Uint8Ar
     autoTable(doc, {
       startY: cursorY,
       head: [["Deskripsi", "Kategori", "Jumlah"]],
-      body: report.expenses.map((e) => [e.description, e.category, formatRupiah(e.amount)]),
+      body: report.expenses.map((e) => [e.description, e.category, formatRupiahPdf(e.amount)]),
       foot: [[
         { content: "Total Pengeluaran", colSpan: 2, styles: { fontStyle: "bold", fillColor: COLORS.paper } },
-        { content: formatRupiah(report.totalExpenses), styles: { fontStyle: "bold", halign: "right", textColor: COLORS.danger } },
+        { content: formatRupiahPdf(report.totalExpenses), styles: { fontStyle: "bold", halign: "right", textColor: COLORS.danger } },
       ]],
       ...tableStyles(COLORS.danger),
       columnStyles: {
@@ -292,29 +301,33 @@ export function generateReportPdf(report: ReportData, meta: ReportMeta): Uint8Ar
   }
 
   const netColor = report.netIncome >= 0 ? COLORS.success : COLORS.danger;
+  const boxH = 26;
   doc.setFillColor(...COLORS.paper);
   doc.setDrawColor(...netColor);
   doc.setLineWidth(0.6);
-  doc.roundedRect(MARGIN, cursorY, CONTENT_W, 18, 3, 3, "FD");
+  doc.roundedRect(MARGIN, cursorY, CONTENT_W, boxH, 3, 3, "FD");
   doc.setFillColor(...netColor);
-  doc.rect(MARGIN, cursorY, 4, 18, "F");
+  doc.rect(MARGIN, cursorY, 4, boxH, "F");
+
+  const labelY = cursorY + 10;
+  const detailY = cursorY + 20;
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(...COLORS.ink);
-  doc.text("Laba Bersih Bulan Ini", MARGIN + 10, cursorY + 8);
-  doc.setFontSize(14);
+  doc.text("Laba Bersih Bulan Ini", MARGIN + 10, labelY);
+
+  doc.setFontSize(13);
   doc.setTextColor(...netColor);
-  doc.text(formatRupiah(report.netIncome), MARGIN + 10, cursorY + 15);
+  doc.text(formatRupiahPdf(report.netIncome), PAGE_W - MARGIN - 6, labelY, { align: "right" });
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
   doc.setTextColor(...COLORS.muted);
   doc.text(
-    `${formatRupiah(report.totalCollected)} masuk − ${formatRupiah(report.totalExpenses)} keluar`,
-    PAGE_W - MARGIN,
-    cursorY + 12,
-    { align: "right" },
+    `${formatRupiahPdf(report.totalCollected)} masuk  -  ${formatRupiahPdf(report.totalExpenses)} keluar`,
+    MARGIN + 10,
+    detailY,
   );
 
   const totalPages = doc.getNumberOfPages();
