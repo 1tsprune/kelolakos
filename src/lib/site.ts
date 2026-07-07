@@ -2,7 +2,7 @@
 export const site = {
   name: "KosKit",
   /** Huruf untuk logo mark */
-  logoLetter: "K",
+
   tagline: "Toolkit manajemen kos & kontrakan",
   description:
     "Aplikasi manajemen kos & kontrakan Indonesia: tagihan otomatis, portal penyewa, pembayaran QRIS Xendit, reminder WhatsApp, dan laporan PDF. Kelola multi-properti dari satu dashboard.",

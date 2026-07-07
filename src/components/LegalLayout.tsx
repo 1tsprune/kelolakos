@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import { site } from "@/lib/site";
 
 export function LegalLayout({
@@ -13,9 +14,7 @@ export function LegalLayout({
       <header className="border-b border-[var(--border)] bg-white">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2 font-extrabold text-[var(--ink)]">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--ink)] text-xs font-black text-[var(--accent)]">
-              {site.logoLetter}
-            </span>
+            <BrandLogo variant="mark" size="sm" href={null} />
             {site.name}
           </Link>
           <Link href="/" className="text-sm font-semibold text-[var(--muted)] hover:text-[var(--ink)]">

@@ -6,6 +6,7 @@ import {
   faqJsonLd,
   webPageJsonLd,
 } from "@/lib/seo";
+import { BrandLogo } from "@/components/BrandLogo";
 import { site, supportWhatsAppUrl } from "@/lib/site";
 
 const PAGE_PATH = "/aplikasi-manajemen-kos";
@@ -87,9 +88,7 @@ export default function AplikasiManajemenKosPage() {
       <header className="border-b border-[var(--border)] bg-white">
         <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2 font-extrabold text-[var(--ink)]">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--ink)] text-xs font-black text-[var(--accent)]">
-              {site.logoLetter}
-            </span>
+            <BrandLogo variant="mark" size="sm" href={null} />
             {site.name}
           </Link>
           <div className="flex items-center gap-3">

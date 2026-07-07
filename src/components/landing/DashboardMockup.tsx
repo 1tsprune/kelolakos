@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandLogo } from "@/components/BrandLogo";
 import { site } from "@/lib/site";
 import { useLandingLocale } from "@/components/landing/LocaleProvider";
 
@@ -27,9 +28,7 @@ export function DashboardMockup() {
         <div className="flex">
           <div className="hidden w-36 shrink-0 border-r border-white/10 bg-[var(--ink)] p-3 sm:block">
             <div className="mb-4 flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--accent)] text-[10px] font-extrabold text-white">
-                {site.logoLetter}
-              </div>
+              <BrandLogo variant="mark" size="xs" href={null} />
               <span className="text-[11px] font-bold text-white">{site.name}</span>
             </div>
             {m.sidebar.map((item) => (

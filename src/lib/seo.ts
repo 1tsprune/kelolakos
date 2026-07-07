@@ -88,7 +88,7 @@ export function organizationJsonLd() {
     name: site.name,
     alternateName: ["Kos Kit", "aplikasi manajemen kos KosKit"],
     url: site.url,
-    logo: `${site.url}/favicon.ico`,
+    logo: `${site.url}/brand/icon.svg`,
     description: site.description,
     email: site.contactEmail,
     sameAs: [site.social.instagram, site.social.tiktok, site.social.twitter],

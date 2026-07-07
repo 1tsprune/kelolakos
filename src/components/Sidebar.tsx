@@ -23,6 +23,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 import { site } from "@/lib/site";
 
 const navSections = [
@@ -78,9 +79,7 @@ export function Sidebar({ open, onClose, className = "" }: { open: boolean; onCl
       >
         <div className="flex items-center justify-between px-5 py-5">
           <Link href="/dashboard" className="flex items-center gap-3" onClick={onClose}>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--accent)]">
-              <span className="text-sm font-extrabold text-white">{site.logoLetter}</span>
-            </div>
+            <BrandLogo variant="mark" size="sm" href={null} />
             <div>
               <p className="text-base font-extrabold text-white">{site.name}</p>
               <p className="text-[10px] font-medium text-white/40">Manajemen Kos</p>

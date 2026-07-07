@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="KosKit">
+  <rect width="512" height="512" rx="112" fill="#0C1222"/>
+  <path d="M128 168 L256 88 L384 168 V392 H128 Z" fill="#1D5DA8" opacity="0.18"/>
+  <path d="M160 176 L256 112 L352 176" stroke="#5B9FD9" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M176 220 H336" stroke="#5B9FD9" stroke-width="20" stroke-linecap="round" opacity="0.55"/>
+  <text x="256" y="360" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="220" font-weight="700" fill="#5B9FD9">K</text>
+</svg>

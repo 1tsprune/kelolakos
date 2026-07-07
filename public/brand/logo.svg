@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" fill="none" role="img" aria-label="KosKit">
+  <rect x="8" y="16" width="128" height="128" rx="28" fill="#0C1222"/>
+  <path d="M40 52 L72 32 L104 52" stroke="#5B9FD9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="72" y="112" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="700" fill="#5B9FD9">K</text>
+  <text x="168" y="98" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="52" font-weight="800" fill="#0C1222" letter-spacing="-1.5">KosKit</text>
+  <text x="170" y="126" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="18" font-weight="500" fill="#5C6478">Toolkit manajemen kos</text>
+</svg>

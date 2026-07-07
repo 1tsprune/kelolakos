@@ -6,6 +6,7 @@ import { useState, Suspense } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
+import { BrandLogo } from "@/components/BrandLogo";
 import { site, supportWhatsAppUrl } from "@/lib/site";
 
 const GOOGLE_ERRORS: Record<string, string> = {
@@ -57,9 +58,7 @@ function LoginForm() {
       <div className="relative hidden flex-1 flex-col justify-between overflow-hidden bg-[var(--ink)] p-12 lg:flex">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(29,93,168,0.2),transparent_60%)]" />
         <Link href="/" className="relative flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--accent)]">
-            <span className="text-sm font-extrabold text-white">{site.logoLetter}</span>
-          </div>
+          <BrandLogo variant="mark" size="sm" href={null} />
           <span className="text-xl font-extrabold text-white">{site.name}</span>
         </Link>
         <div className="relative">
@@ -74,9 +73,7 @@ function LoginForm() {
       <div className="flex flex-1 items-center justify-center bg-[var(--paper)] p-8">
         <div className="w-full max-w-sm">
           <Link href="/" className="mb-8 inline-flex items-center gap-2 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--ink)]">
-              <span className="text-xs font-extrabold text-[var(--accent)]">{site.logoLetter}</span>
-            </div>
+            <BrandLogo variant="mark" size="sm" href={null} />
             <span className="font-extrabold">{site.name}</span>
           </Link>
           <h1 className="text-2xl font-extrabold text-[var(--ink)]">Masuk</h1>

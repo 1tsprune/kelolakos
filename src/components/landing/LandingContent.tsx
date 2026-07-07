@@ -13,6 +13,7 @@ import { useLandingLocale } from "@/components/landing/LocaleProvider";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import { WorkflowStepVisual } from "@/components/landing/WorkflowStepVisual";
 import { faqJsonLd, organizationJsonLd, softwareApplicationJsonLd, websiteJsonLd } from "@/lib/seo";
+import { BrandLogo } from "@/components/BrandLogo";
 import { site, supportWhatsAppUrl } from "@/lib/site";
 
 function formatPrice(price: number): string {
@@ -39,9 +40,7 @@ export function LandingContent() {
       <nav className="sticky top-0 z-50 border-b border-[var(--border)]/80 bg-[var(--paper)]/92 backdrop-blur-lg">
         <div className="mx-auto flex h-[4.25rem] max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--ink)] shadow-sm">
-              <span className="font-display text-sm font-black text-[var(--accent)]">{site.logoLetter}</span>
-            </div>
+            <BrandLogo variant="mark" size="sm" href={null} className="shadow-sm" />
             <div>
               <span className="text-base font-extrabold tracking-tight text-[var(--ink)]">{site.name}</span>
               <p className="text-[10px] font-medium text-[var(--muted)]">{t.tagline}</p>
@@ -381,9 +380,7 @@ export function LandingContent() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--ink)]">
-                <span className="font-display text-xs font-black text-[var(--accent)]">{site.logoLetter}</span>
-              </div>
+              <BrandLogo variant="mark" size="sm" href={null} />
               <div>
                 <span className="font-extrabold text-[var(--ink)]">{site.name}</span>
                 <p className="text-[10px] text-[var(--muted)]">{t.tagline}</p>
