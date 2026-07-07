@@ -182,8 +182,10 @@ export function rowToPayment(r: PaymentRow): Payment {
     lateFee: Number(d.lateFee ?? 0),
     paidAt: (d.paidAt as string) ?? null,
     proofPhotoUrl: (d.proofPhotoUrl as string) ?? null,
-    midtransOrderId: (d.midtransOrderId as string) ?? null,
+    paymentOrderId: (d.paymentOrderId as string) ?? (d.midtransOrderId as string) ?? null,
     notes: (d.notes as string) ?? null,
+    waBillSentAt: (d.waBillSentAt as string) ?? null,
+    waReminderSentAt: (d.waReminderSentAt as string) ?? null,
     createdAt: iso(r.created_at),
     updatedAt: iso(r.updated_at ?? r.created_at),
   };
@@ -194,8 +196,10 @@ export function paymentToRow(p: Payment) {
     lateFee: p.lateFee,
     paidAt: p.paidAt,
     proofPhotoUrl: p.proofPhotoUrl,
-    midtransOrderId: p.midtransOrderId,
+    paymentOrderId: p.paymentOrderId,
     notes: p.notes,
+    waBillSentAt: p.waBillSentAt,
+    waReminderSentAt: p.waReminderSentAt,
   };
   return [
     p.id, p.tenantId, p.roomId, p.periodMonth, p.periodYear, p.amount, p.status,

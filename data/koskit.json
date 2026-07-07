@@ -50,7 +50,7 @@
       "number": "A2",
       "floor": 1,
       "monthlyRent": 850000,
-      "status": "terisi",
+      "status": "kosong",
       "electricityType": "termasuk",
       "facilities": [
         "AC",
@@ -58,7 +58,7 @@
       ],
       "notes": null,
       "createdAt": "2026-01-15T08:00:00.000Z",
-      "updatedAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-07-07T04:20:02.832Z",
       "photoUrl": null
     },
     {
@@ -143,15 +143,15 @@
       "phone": "08122333444",
       "ktp": "3273012345670002",
       "checkIn": "2026-06-15T00:00:00.000Z",
-      "checkOut": null,
+      "checkOut": "2026-07-07T04:20:02.832Z",
       "contractEndDate": "2026-07-20T00:00:00.000Z",
       "emergencyContact": null,
       "depositAmount": 500000,
       "depositStatus": "ditahan",
       "notes": null,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-06-15T08:00:00.000Z",
-      "updatedAt": "2026-06-15T08:00:00.000Z"
+      "updatedAt": "2026-07-07T04:20:02.832Z"
     },
     {
       "id": "tenant_dewi",
@@ -189,7 +189,7 @@
       "createdAt": "2026-07-01T08:00:00.000Z",
       "updatedAt": "2026-07-03T10:00:00.000Z",
       "proofPhotoUrl": null,
-      "midtransOrderId": null
+      "paymentOrderId": null
     },
     {
       "id": "pay_rina_jul",
@@ -206,7 +206,7 @@
       "createdAt": "2026-07-01T08:00:00.000Z",
       "updatedAt": "2026-07-06T17:44:05.634Z",
       "proofPhotoUrl": null,
-      "midtransOrderId": "KOS-rina_jul-mr9gzhs0"
+      "paymentOrderId": "KOS-rina_jul-mr9gzhs0"
     },
     {
       "id": "pay_dewi_jul",
@@ -223,7 +223,7 @@
       "createdAt": "2026-07-01T08:00:00.000Z",
       "updatedAt": "2026-07-06T17:44:08.857Z",
       "proofPhotoUrl": null,
-      "midtransOrderId": null
+      "paymentOrderId": null
     },
     {
       "id": "pay_andi_jun",
@@ -240,7 +240,7 @@
       "createdAt": "2026-06-01T08:00:00.000Z",
       "updatedAt": "2026-06-04T10:00:00.000Z",
       "proofPhotoUrl": null,
-      "midtransOrderId": null
+      "paymentOrderId": null
     },
     {
       "id": "pay_andi_may",
@@ -257,7 +257,7 @@
       "createdAt": "2026-05-01T08:00:00.000Z",
       "updatedAt": "2026-05-03T10:00:00.000Z",
       "proofPhotoUrl": null,
-      "midtransOrderId": null
+      "paymentOrderId": null
     },
     {
       "id": "pay_andi_apr",
@@ -274,7 +274,7 @@
       "createdAt": "2026-04-01T08:00:00.000Z",
       "updatedAt": "2026-04-05T10:00:00.000Z",
       "proofPhotoUrl": null,
-      "midtransOrderId": null
+      "paymentOrderId": null
     }
   ],
   "utilityBills": [
@@ -373,6 +373,14 @@
     }
   ],
   "activities": [
+    {
+      "id": "mra54hw0iwvvbki",
+      "type": "tenant",
+      "message": "Rina Wulandari check-out",
+      "entityType": "tenant",
+      "entityId": "tenant_rina",
+      "createdAt": "2026-07-07T04:20:02.832Z"
+    },
     {
       "id": "mr9ieq3d76crzwl",
       "type": "payment",
@@ -547,15 +555,20 @@
       "whatsappTemplate": "default",
       "whatsappApiKey": "",
       "whatsappProvider": "fonnte",
-      "midtransServerKey": "",
-      "midtransClientKey": "",
-      "midtransIsProduction": false,
+      "xenditSecretKey": "",
+      "xenditWebhookToken": "",
       "defaultDeposit": 500000,
       "electricityRate": 1500,
       "waterRate": 5000,
       "autoReminderEnabled": true,
       "portalWelcomeMessage": "Selamat datang di portal penyewa. Bayar tagihan dan laporkan masalah di sini.",
-      "onboardingCompleted": true
+      "onboardingCompleted": true,
+      "subscriptionPlan": "free",
+      "subscriptionStatus": "active",
+      "trialEndsAt": "",
+      "subscriptionEndsAt": null,
+      "subscriptionOrderId": null,
+      "pendingSubscriptionPlan": null
     }
   }
 }

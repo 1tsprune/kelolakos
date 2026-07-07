@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSnapToken } from "@/lib/midtrans";
+import { createTenantInvoice } from "@/lib/xendit";
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,12 +7,10 @@ export async function POST(request: NextRequest) {
     if (!paymentId) {
       return NextResponse.json({ error: "paymentId wajib" }, { status: 400 });
     }
-    const result = await createSnapToken(paymentId);
+    const result = await createTenantInvoice(paymentId);
     return NextResponse.json(result);
   } catch (e) {
-    return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Gagal buat token Snap" },
-      { status: 500 },
-    );
+    const message = e instanceof Error ? e.message : "Invoice error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

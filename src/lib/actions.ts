@@ -11,8 +11,9 @@ import {
   assertUtilityAccess,
 } from "./security";
 import { getUserSettings, setUserSettings } from "./settings";
+import { assertCanAddProperty, assertCanAddRoom } from "./subscription";
 import { logActivity, newId, now, readDb, writeDb } from "./store";
-import { createPaymentLink } from "./midtrans";
+import { createPaymentLink } from "./xendit";
 import { sendBulkReminders } from "./whatsapp-api";
 import type {
   Expense,
@@ -59,6 +60,8 @@ export async function createProperty(formData: FormData) {
   const db = await readDb();
   const timestamp = now();
   const userId = await getSessionUserId();
+  const userSettings = getUserSettings(db, userId);
+  assertCanAddProperty(db, userId, userSettings);
   const property: Property = { id: newId(), userId, name, address, city, ownerName, ownerPhone, notes, createdAt: timestamp, updatedAt: timestamp };
   db.properties.push(property);
   await logActivity(db, "property", `Properti baru ditambahkan: ${name}`, "property", property.id);
@@ -79,6 +82,8 @@ export async function createRoom(formData: FormData) {
   const db = await readDb();
   const userId = await getSessionUserId();
   assertPropertyAccess(db, userId, propertyId);
+  const userSettings = getUserSettings(db, userId);
+  assertCanAddRoom(db, userId, userSettings);
   const timestamp = now();
   const photoUrl = String(formData.get("photoUrl") ?? "").trim() || null;
   const room: Room = { id: newId(), propertyId, number, floor, monthlyRent, electricityType, facilities, photoUrl, notes, status: "kosong", createdAt: timestamp, updatedAt: timestamp };
@@ -116,7 +121,13 @@ export async function createTenant(formData: FormData) {
   const contractEndDate = contractEndRaw ? new Date(contractEndRaw).toISOString() : null;
   const tenant: Tenant = { id: tenantId, roomId, name, phone, ktp, ktpPhotoUrl, portalToken: `portal_${tenantId}_${Date.now().toString(36)}`, checkIn: checkInDate.toISOString(), checkOut: null, contractEndDate, emergencyContact, depositAmount, depositStatus: "ditahan", notes, isActive: true, createdAt: timestamp, updatedAt: timestamp };
   const dueDay = userSettings.dueDayOfMonth;
-  const payment: Payment = { id: newId(), tenantId: tenant.id, roomId, periodMonth: checkInDate.getMonth() + 1, periodYear: checkInDate.getFullYear(), amount: room.monthlyRent, lateFee: 0, dueDate: new Date(checkInDate.getFullYear(), checkInDate.getMonth(), dueDay).toISOString(), paidAt: null, status: "belum", proofPhotoUrl: null, midtransOrderId: null, notes: null, createdAt: timestamp, updatedAt: timestamp };
+  const payment: Payment = {
+    id: newId(), tenantId: tenant.id, roomId, periodMonth: checkInDate.getMonth() + 1, periodYear: checkInDate.getFullYear(),
+    amount: room.monthlyRent, lateFee: 0,
+    dueDate: new Date(checkInDate.getFullYear(), checkInDate.getMonth(), dueDay).toISOString(),
+    paidAt: null, status: "belum", proofPhotoUrl: null, paymentOrderId: null, notes: null,
+    waBillSentAt: null, waReminderSentAt: null, createdAt: timestamp, updatedAt: timestamp,
+  };
 
   db.tenants.push(tenant);
   db.payments.push(payment);
@@ -124,6 +135,10 @@ export async function createTenant(formData: FormData) {
   db.rooms[ri] = { ...db.rooms[ri], status: "terisi", updatedAt: timestamp };
   await logActivity(db, "tenant", `Penyewa baru: ${name} masuk kamar ${room.number}`, "tenant", tenant.id);
   await writeDb(db);
+
+  const { sendPortalWelcome } = await import("./reminder-scheduler");
+  await sendPortalWelcome(userId, tenant.id);
+
   revalidateAll();
 }
 
@@ -170,7 +185,13 @@ export async function generateMonthlyPayments(month: number, year: number) {
     if (db.payments.some((p) => p.tenantId === tenant.id && p.periodMonth === month && p.periodYear === year)) continue;
     const room = db.rooms.find((r) => r.id === tenant.roomId);
     if (!room) continue;
-    db.payments.push({ id: newId(), tenantId: tenant.id, roomId: tenant.roomId, periodMonth: month, periodYear: year, amount: room.monthlyRent, lateFee: 0, dueDate: new Date(year, month - 1, userSettings.dueDayOfMonth).toISOString(), paidAt: null, status: "belum", proofPhotoUrl: null, midtransOrderId: null, notes: null, createdAt: timestamp, updatedAt: timestamp });
+    db.payments.push({
+      id: newId(), tenantId: tenant.id, roomId: tenant.roomId, periodMonth: month, periodYear: year,
+      amount: room.monthlyRent, lateFee: 0,
+      dueDate: new Date(year, month - 1, userSettings.dueDayOfMonth).toISOString(),
+      paidAt: null, status: "belum", proofPhotoUrl: null, paymentOrderId: null, notes: null,
+      waBillSentAt: null, waReminderSentAt: null, createdAt: timestamp, updatedAt: timestamp,
+    });
     created++;
   }
   if (created > 0) await logActivity(db, "payment", `Generate ${created} tagihan untuk ${month}/${year}`, "system", "generate");
@@ -289,14 +310,13 @@ export async function updateSettings(formData: FormData) {
     dueDayOfMonth: Number(formData.get("dueDayOfMonth") ?? 5),
     ownerEmail: String(formData.get("ownerEmail") ?? "").trim(),
     ownerPhone: String(formData.get("ownerPhone") ?? "").trim(),
-    businessName: String(formData.get("businessName") ?? "KelolaKos").trim(),
+    businessName: String(formData.get("businessName") ?? "KosKit").trim(),
     appUrl: String(formData.get("appUrl") ?? "").trim(),
     whatsappTemplate: String(formData.get("whatsappTemplate") ?? "default"),
     whatsappApiKey: String(formData.get("whatsappApiKey") ?? "").trim(),
     whatsappProvider: (String(formData.get("whatsappProvider") ?? "fonnte")) as "fonnte" | "waba" | "manual",
-    midtransServerKey: String(formData.get("midtransServerKey") ?? "").trim(),
-    midtransClientKey: String(formData.get("midtransClientKey") ?? "").trim(),
-    midtransIsProduction: formData.get("midtransIsProduction") === "on",
+    xenditSecretKey: String(formData.get("xenditSecretKey") ?? "").trim(),
+    xenditWebhookToken: String(formData.get("xenditWebhookToken") ?? "").trim(),
     monthlyRevenueTarget: Number(formData.get("monthlyRevenueTarget") ?? current.monthlyRevenueTarget ?? 10000000),
     defaultDeposit: Number(formData.get("defaultDeposit") ?? current.defaultDeposit ?? 500000),
     electricityRate: Number(formData.get("electricityRate") ?? current.electricityRate ?? 1500),

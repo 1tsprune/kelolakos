@@ -40,18 +40,27 @@ async function main() {
     settings: migrateSettings(raw.settings),
   };
 
+  const { normalizeUser } = await import("../src/lib/users-store");
   let users: User[] = [];
   try {
-    users = JSON.parse(await readFile(usersPath, "utf-8")) as User[];
+    const raw = JSON.parse(await readFile(usersPath, "utf-8")) as Partial<User>[];
+    users = raw.map((u) =>
+      normalizeUser(u as Partial<User> & Pick<User, "id" | "name" | "email" | "createdAt">),
+    );
   } catch {
     const hash = await bcrypt.hash("password123", 10);
+    const createdAt = new Date().toISOString();
     users = [{
       id: "user_budi",
       name: "Pak Budi",
       email: "budi@kosmelati.id",
       passwordHash: hash,
       phone: "081234567890",
-      createdAt: new Date().toISOString(),
+      createdAt,
+      emailVerified: true,
+      emailVerifiedAt: createdAt,
+      googleId: null,
+      authProvider: "email",
     }];
   }
 
@@ -62,10 +71,23 @@ async function main() {
   console.log("Menyimpan users...");
   for (const user of users) {
     await pool.query(
-      `INSERT INTO users (id, name, email, password_hash, phone, created_at)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       ON CONFLICT (id) DO UPDATE SET name=$2, email=$3, password_hash=$4, phone=$5`,
-      [user.id, user.name, user.email, user.passwordHash, user.phone, user.createdAt],
+      `INSERT INTO users (id, name, email, password_hash, phone, created_at, email_verified, email_verified_at, google_id, auth_provider)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       ON CONFLICT (id) DO UPDATE SET
+         name=$2, email=$3, password_hash=$4, phone=$5,
+         email_verified=$7, email_verified_at=$8, google_id=$9, auth_provider=$10`,
+      [
+        user.id,
+        user.name,
+        user.email,
+        user.passwordHash,
+        user.phone,
+        user.createdAt,
+        user.emailVerified,
+        user.emailVerifiedAt,
+        user.googleId,
+        user.authProvider,
+      ],
     );
   }
 

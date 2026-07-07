@@ -15,7 +15,10 @@ export async function POST(request: NextRequest) {
   const { email, password } = await request.json();
   const result = await loginUser(email, password);
   if (!result.ok || !result.user) {
-    return NextResponse.json({ error: result.error }, { status: 401 });
+    return NextResponse.json(
+      { error: result.error, needsVerification: result.needsVerification ?? false },
+      { status: result.needsVerification ? 403 : 401 },
+    );
   }
   await createSession(result.user);
   return NextResponse.json({ ok: true, user: { name: result.user.name, email: result.user.email } });

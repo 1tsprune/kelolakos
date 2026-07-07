@@ -1,6 +1,6 @@
 export type Locale = "id" | "en";
 
-export const LOCALE_STORAGE_KEY = "kelolakos-locale";
+export const LOCALE_STORAGE_KEY = "koskit-locale";
 
 export type LandingChapter = {
   id: string;
@@ -12,8 +12,9 @@ export type LandingChapter = {
 
 export type LandingCopy = {
   tagline: string;
-  nav: { features: string; howItWorks: string; pricing: string; faq: string; login: string; tryFree: string };
+  nav: { features: string; howItWorks: string; pricing: string; faq: string; support: string; login: string; tryFree: string };
   hero: {
+    badge: string;
     titleBefore: string;
     titleEmphasis: string;
     titleAfter: string;
@@ -23,6 +24,43 @@ export type LandingCopy = {
     noCard: string;
     sampleData: string;
     demo: string;
+    scrollHint: string;
+    pills: { label: string; value: string }[];
+    mockup: {
+      month: string;
+      greeting: string;
+      targetBadge: string;
+      targetLine: string;
+      sidebar: string[];
+      sidebarActive: string;
+      stats: { l: string; v: string; c: string }[];
+      tenants: { n: string; s: string; ok: boolean }[];
+      floatPayment: { title: string; detail: string };
+      floatOccupancy: { title: string; value: string };
+      floatReminder: { title: string; value: string };
+    };
+  };
+  featureGrid: {
+    title: string;
+    subtitle: string;
+    items: { id: string; title: string; desc: string }[];
+    demos: Record<
+      string,
+      | { avatars: string[] }
+      | { rows: { room: string; status: string; ok: boolean }[] }
+      | { cells: { label: string; filled: boolean }[] }
+      | { title: string; lines: { label: string; value: string }[] }
+    >;
+  };
+  midCta: { title: string; subtitle: string; button: string };
+  problems: { title: string; subtitle: string; items: { title: string; desc: string }[] };
+  support: {
+    title: string;
+    subtitle: string;
+    waCta: string;
+    waNote: string;
+    emailLabel: string;
+    responseNote: string;
   };
   stats: {
     rooms: { label: string; desc: string };
@@ -46,15 +84,38 @@ export type LandingCopy = {
     chapters: LandingChapter[];
     preview: Record<string, Record<string, string>>;
   };
-  workflow: { title: string; subtitle: string; steps: { step: string; title: string; desc: string }[] };
-  testimonials: { title: string; items: { name: string; role: string; text: string; avatar: string }[] };
+  workflow: {
+    title: string;
+    subtitle: string;
+    steps: { step: string; title: string; desc: string; visual: "verify" | "rooms" | "manage" }[];
+    visuals: {
+      verify: { email: string; verified: string };
+      rooms: { rooms: string[]; caption: string };
+      manage: { days: string[]; payments: { name: string; status: string; ok: boolean }[] };
+    };
+  };
+  testimonials: {
+    title: string;
+    items: { name: string; role: string; text: string; avatar: string; stars?: number }[];
+  };
   pricing: {
     title: string;
     subtitle: string;
     popular: string;
     perMonth: string;
     cta: string;
-    plans: { name: string; desc: string; features: string[]; pop: boolean; price: number }[];
+    freeForever: string;
+    ctaFree: string;
+    plans: {
+      name: string;
+      desc: string;
+      features: string[];
+      pop: boolean;
+      price: number;
+      badge?: string;
+      priceNote?: string;
+      accent?: boolean;
+    }[];
   };
   faq: { title: string; items: { q: string; a: string }[] };
   cta: { title: string; subtitle: string; button: string };
@@ -89,26 +150,126 @@ const comparisonRowsEn = [
 
 export const landingCopy: Record<Locale, LandingCopy> = {
   id: {
-    tagline: "Manajemen kos, tanpa ribet",
+    tagline: "Toolkit manajemen kos & kontrakan",
     nav: {
       features: "Fitur",
       howItWorks: "Cara Pakai",
       pricing: "Harga",
       faq: "Tanya Jawab",
+      support: "Bantuan",
       login: "Masuk",
       tryFree: "Coba Gratis",
     },
     hero: {
-      titleBefore: "Tagihan kos beres,",
-      titleEmphasis: "tanpa",
-      titleAfter: "buka Excel tiap akhir bulan",
+      badge: "Early Access — 50 pendaftar pertama dapat onboarding prioritas",
+      titleBefore: "Kelola kos",
+      titleEmphasis: "tanpa ribet",
+      titleAfter: " — tagihan, WA, QRIS satu dashboard",
       subtitle:
-        "Catat penyewa, ingatkan lewat WA, terima bayar QRIS, lihat jatuh tempo di kalender — dari satu aplikasi.",
-      ctaPrimary: "Coba Gratis 14 Hari",
-      ctaSecondary: "Lihat Contoh Isinya",
+        "Buat pemilik kos yang capek ngejar tagihan lewat chat. Catat penyewa, ingatkan bayar, terima QRIS — semua dari satu tempat.",
+      ctaPrimary: "Coba Gratis",
+      ctaSecondary: "Lihat Fitur",
       noCard: "Tanpa kartu kredit",
-      sampleData: "Ada data contoh",
+      sampleData: "Gratis 1 properti · 3 kamar",
       demo: "Demo: budi@kosmelati.id",
+      scrollHint: "Scroll",
+      pills: [
+        { label: "Penghuni", value: "Multi-kos" },
+        { label: "Pembayaran", value: "Otomatis + QRIS" },
+        { label: "Laporan", value: "PDF real-time" },
+      ],
+      mockup: {
+        month: "Juli 2026",
+        greeting: "Selamat pagi, Pak Budi",
+        targetBadge: "33% target",
+        targetLine: "Target pendapatan Rp 10jt/bulan",
+        sidebar: ["Dashboard", "Pembayaran", "Penyewa", "Portal", "Laporan"],
+        sidebarActive: "Dashboard",
+        stats: [
+          { l: "Terkumpul", v: "Rp 850rb", c: "text-emerald-400" },
+          { l: "Tunggakan", v: "Rp 2,1jt", c: "text-amber-300" },
+          { l: "Hunian", v: "80%", c: "text-white" },
+        ],
+        tenants: [
+          { n: "Andi Pratama", s: "Lunas", ok: true },
+          { n: "Rina Wulandari", s: "Belum", ok: false },
+          { n: "Dewi Lestari", s: "Terlambat", ok: false },
+        ],
+        floatPayment: { title: "Pembayaran diterima", detail: "Kamar 12 · Rp 1.500.000" },
+        floatOccupancy: { title: "Penghuni baru", value: "8 / 10 kamar" },
+        floatReminder: { title: "Reminder terkirim", value: "12 penyewa ✓" },
+      },
+    },
+    featureGrid: {
+      title: "Yang biasa bikin pusing, di sini ada",
+      subtitle: "Penghuni, tagihan, kamar kosong, laporan — nggak perlu bolak-balik Excel",
+      items: [
+        { id: "tenants", title: "Data Penyewa", desc: "Kontrak, deposit, riwayat tinggal — tinggal buka, nggak perlu buka-buka buku catatan lagi." },
+        { id: "payments", title: "Tagihan & Bayar", desc: "Status lunas atau belum kelihatan jelas. Reminder WA tinggal klik, bayar bisa lewat QRIS." },
+        { id: "rooms", title: "Kamar Kosong", desc: "Langsung tahu kamar mana yang kosong, di kos mana — praktis kalau punya lebih dari satu properti." },
+        { id: "reports", title: "Laporan Bulanan", desc: "Masuk berapa, keluar berapa, piutang siapa — export PDF atau CSV kalau perlu." },
+      ],
+      demos: {
+        tenants: { avatars: ["A", "B", "C", "D", "E"] },
+        payments: {
+          rows: [
+            { room: "Kamar 12", status: "Lunas", ok: true },
+            { room: "Kamar 8", status: "Pending", ok: false },
+            { room: "Kamar 3", status: "Telat", ok: false },
+          ],
+        },
+        rooms: {
+          cells: [
+            { label: "01", filled: true },
+            { label: "02", filled: true },
+            { label: "03", filled: false },
+            { label: "04", filled: true },
+            { label: "05", filled: true },
+            { label: "06", filled: false },
+            { label: "07", filled: true },
+            { label: "08", filled: true },
+          ],
+        },
+        reports: {
+          title: "Laporan Juli 2026",
+          lines: [
+            { label: "Masuk", value: "Rp 8,5jt" },
+            { label: "Keluar", value: "Rp 1,2jt" },
+            { label: "Laba", value: "Rp 7,3jt" },
+          ],
+        },
+      },
+    },
+    midCta: {
+      title: "Mau coba dulu?",
+      subtitle: "Daftar gratis, verifikasi email, langsung masuk dashboard.",
+      button: "Mulai Gratis",
+    },
+    problems: {
+      title: "Kayaknya familiar?",
+      subtitle: "Kebanyakan pemilik kos pernah ngalamin ini",
+      items: [
+        {
+          title: "Catatan berantakan",
+          desc: "Data penyewa masih di buku atau Excel. Begitu kamar nambah, susah cari riwayatnya.",
+        },
+        {
+          title: "Lupa ingetin bayar",
+          desc: "Tiap tanggal 5 harus chat satu-satu. Capek, dan sering ada yang kelewat.",
+        },
+        {
+          title: "Banyak kos, bingung",
+          desc: "Punya dua-tiga kos di beda lokasi? Susah pantau kamar kosong dan uang masuknya.",
+        },
+      ],
+    },
+    support: {
+      title: "Bingung mulai dari mana? Chat aja",
+      subtitle: "Admin KosKit bantu setup — dari masukin data kos sampai sambungin Xendit & WhatsApp.",
+      waCta: "Chat via WhatsApp",
+      waNote: "Respon cepat · Bahasa Indonesia · Tanpa biaya konsultasi",
+      emailLabel: "Atau email",
+      responseNote: "Biasanya membalas dalam beberapa jam kerja",
     },
     stats: {
       rooms: { label: "Kamar dicatat", desc: "di berbagai kota" },
@@ -118,8 +279,8 @@ export const landingCopy: Record<Locale, LandingCopy> = {
       perMonth: "per bulan",
     },
     comparison: {
-      title: "Masih catat di Excel?",
-      subtitle: "Spreadsheet memang bisa. Tapi begitu kamar nambah, yang sering kewalahan itu kamu sendiri.",
+      title: "Masih pakai Excel?",
+      subtitle: "Awalnya oke. Tapi begitu kamar nambah, spreadsheet mulai bikin pusing sendiri.",
       featureCol: "Fitur",
       excelCol: "Excel",
       manual: "manual",
@@ -198,7 +359,7 @@ export const landingCopy: Record<Locale, LandingCopy> = {
         },
         wa: {
           sent: "Terkirim ke 12 penyewa",
-          message: "Halo Rina, tagihan kos Melati kamar A2 Rp 850.000 jatuh tempo 5 Juli. Link bayar: kelolakos.id/bayar/...",
+          message: "Halo Rina, tagihan kos Melati kamar A2 Rp 850.000 jatuh tempo 5 Juli. Link bayar: koskit.id/bayar/...",
           delivered: "12 terkirim",
           failed: "0 gagal",
           pending: "3 belum bayar",
@@ -226,73 +387,235 @@ export const landingCopy: Record<Locale, LandingCopy> = {
       },
     },
     workflow: {
-      title: "Mulai dari sini",
-      subtitle: "Tiga langkah, biasanya selesai dalam satu sore",
+      title: "Mulai dalam 3 langkah",
+      subtitle: "Biasanya selesai dalam satu sore — nggak perlu skill teknis khusus",
       steps: [
-        { step: "01", title: "Daftar, masukin kos", desc: "Nama kos, alamat, kamar, harga sewa. Ada panduan kalau baru pertama kali pakai." },
-        { step: "02", title: "Catat penyewa", desc: "Nomor HP, deposit, tanggal masuk. Link portal buat penyewa langsung jadi — tinggal dikirim." },
-        { step: "03", title: "Sisanya berjalan sendiri", desc: "Tagihan tiap bulan, ingatkan lewat WA, terima bayar QRIS. Kamu fokus isi kamar yang kosong." },
+        { step: "01", title: "Daftar & verifikasi email", desc: "Buat akun dalam hitungan detik. Verifikasi email, lalu langsung masuk dashboard.", visual: "verify" },
+        { step: "02", title: "Tambahkan kos & kamar", desc: "Masukkan properti, daftar kamar, dan harga sewa lewat form yang simpel.", visual: "rooms" },
+        { step: "03", title: "Kelola dari mana saja", desc: "Pantau pembayaran, ketersediaan kamar, dan laporan kapan pun lewat HP atau laptop.", visual: "manage" },
       ],
+      visuals: {
+        verify: { email: "juragan@kosanda.id", verified: "Terverifikasi" },
+        rooms: { rooms: ["01", "02", "03", "04", "05", "06", "07", "08", "09"], caption: "9 kamar · 7 terisi" },
+        manage: {
+          days: ["Sen", "Sel", "Rab", "Kam"],
+          payments: [
+            { name: "Kamar A1", status: "Lunas", ok: true },
+            { name: "Kamar B2", status: "Pending", ok: false },
+          ],
+        },
+      },
     },
     testimonials: {
-      title: "Yang sudah pakai",
+      title: "Dipercaya pemilik kos",
       items: [
-        { name: "Pak Budi", role: "2 kos · Bandung", text: "Dulu tiap tanggal 5 repot ingetin satu-satu lewat WA. Sekarang tinggal klik reminder. Koleksi naik, saya juga nggak capek.", avatar: "PB" },
-        { name: "Bu Siti", role: "Kost putri · Depok", text: "Kalendernya membantu — saya langsung lihat kontrak siapa yang mau habis bulan depan. Kamar kosong juga cepat keisi dari antrian.", avatar: "BS" },
-        { name: "Hendra", role: "12 kamar · Surabaya", text: "Punya 3 kos di beda lokasi. Cek pendapatan tiap kos tinggal buka HP, nggak buka 3 file Excel lagi.", avatar: "HE" },
+        {
+          name: "Pak Budi",
+          role: "Pemilik 2 kos, Bandung",
+          text: "Dulu tagihan selalu telat karena lupa WA manual. Sekarang generate + reminder otomatis, koleksi naik 30%.",
+          avatar: "PB",
+          stars: 5,
+        },
+        {
+          name: "Bu Siti",
+          role: "Kost putri, Depok",
+          text: "Portal penyewa game changer. Mereka bayar sendiri lewat QRIS, saya tinggal cek dashboard.",
+          avatar: "BS",
+          stars: 5,
+        },
+        {
+          name: "Hendra",
+          role: "12 kamar, Surabaya",
+          text: "Laporan PDF-nya langsung saya kasih ke istri buat pembukuan. Jauh lebih rapi dari Excel.",
+          avatar: "HE",
+          stars: 5,
+        },
       ],
     },
     pricing: {
-      title: "Harga per bulan",
-      subtitle: "Trial 14 hari gratis dulu",
-      popular: "Paling Laris",
+      title: "Harga transparan",
+      subtitle: "Mulai gratis, upgrade kapan saja. Tanpa kartu kredit.",
+      popular: "Paling Dipilih",
       perMonth: "/bulan",
-      cta: "Coba Dulu Gratis",
+      freeForever: "selamanya",
+      cta: "Coba Gratis",
+      ctaFree: "Mulai Gratis",
       plans: [
-        { name: "Starter", price: 99000, desc: "Buat 1 kos kecil", features: ["1 properti", "10 kamar", "Portal penyewa", "Reminder WA", "Laporan PDF"], pop: false },
-        { name: "Pro", price: 199000, desc: "Yang paling sering dipilih", features: ["5 properti", "50 kamar", "QRIS/Midtrans", "Kalender & notifikasi", "Daftar tunggu", "Broadcast WA"], pop: true },
-        { name: "Business", price: 399000, desc: "Buat pengelola banyak kos", features: ["Properti tanpa batas", "Kamar tanpa batas", "Akses staff", "API", "Prioritas support", "Domain sendiri"], pop: false },
+        {
+          name: "Early Adopter",
+          badge: "50 Slot Pertama",
+          desc: "Pendaftar pertama",
+          price: 0,
+          priceNote: "bonus onboarding",
+          accent: true,
+          features: ["Trial 30 hari full Pro", "Diskon 20% upgrade selamanya", "Onboarding prioritas via WA", "Akses fitur baru lebih dulu"],
+          pop: false,
+        },
+        {
+          name: "Gratis",
+          desc: "Mulai tanpa bayar",
+          price: 0,
+          features: ["1 properti · 3 kamar", "Manajemen penyewa", "Pelacakan pembayaran", "Reminder WA manual", "Laporan dasar"],
+          pop: false,
+        },
+        {
+          name: "Pro",
+          desc: "Untuk juragan serius",
+          price: 199000,
+          features: ["5 properti · 50 kamar", "Portal penyewa + QRIS", "Kalender & notifikasi", "Broadcast WA", "Laporan PDF & CSV"],
+          pop: true,
+        },
+        {
+          name: "Business",
+          desc: "Multi-kos skala besar",
+          price: 399000,
+          features: ["Properti & kamar tanpa batas", "Semua fitur Pro", "Prioritas support", "Domain sendiri", "Onboarding call 30 menit"],
+          pop: false,
+        },
       ],
     },
     faq: {
-      title: "Sering ditanya",
+      title: "Pertanyaan yang sering diajukan",
       items: [
-        { q: "Bisa kelola lebih dari satu kos?", a: "Bisa. Paket Pro sampai 5 properti, Business tanpa batas. Tiap kos punya kamar, penyewa, dan laporannya sendiri — tapi kamu buka cukup satu dashboard." },
-        { q: "Penyewa bisa cek tagihan sendiri?", a: "Bisa. Tiap penyewa dapat link portal. Mereka lihat tagihan, riwayat bayar, dan bisa bayar lewat QRIS tanpa harus chat kamu." },
-        { q: "Reminder WhatsApp gimana caranya?", a: "Hubungkan akun Fonnte kamu di Pengaturan. Abis itu, tinggal klik kirim reminder ke yang belum bayar. Mau coba dulu tanpa API key juga bisa (mode simulasi)." },
-        { q: "Ada laporan buat pembukuan?", a: "Ada. Export PDF buat print, CSV buat Excel. Ada rincian pendapatan, pengeluaran, dan sisa piutang per bulan." },
-        { q: "Datanya aman nggak?", a: "Data kos kamu cuma bisa diakses akun kamu. Kami nggak jual data penyewa. Login juga dilindungi supaya nggak bisa ditebak sembarangan." },
-        { q: "Bisa coba dulu tanpa bayar?", a: "Bisa, 14 hari gratis tanpa kartu kredit. Ada data contoh supaya kamu langsung lihat tampilannya kayak gimana." },
+        { q: "Apa itu KosKit?", a: "KosKit adalah aplikasi manajemen kos & kontrakan untuk pemilik kos di Indonesia. Lewat satu dashboard, kamu kelola penyewa, tagihan, reminder WhatsApp, portal penyewa, dan laporan keuangan." },
+        { q: "Apakah KosKit gratis?", a: "Ada paket Gratis selamanya (1 properti, 3 kamar). 50 pendaftar pertama dapat bonus Early Adopter: 30 hari akses penuh seperti Pro, plus diskon upgrade. Paket berbayar mulai Rp 199rb/bulan." },
+        { q: "Apa bedanya dengan catat di Excel?", a: "Excel mudah berantakan begitu kamar nambah. KosKit menyatukan penyewa, pembayaran, dan ketersediaan kamar — plus reminder otomatis, portal penyewa, dan laporan tanpa hitung manual." },
+        { q: "Bisa kelola lebih dari satu kos?", a: "Bisa. Paket Pro sampai 5 properti, Business tanpa batas. Tiap kos punya kamar, penyewa, dan laporannya sendiri — satu dashboard." },
+        { q: "Penyewa bisa cek tagihan sendiri?", a: "Bisa. Tiap penyewa dapat link portal unik untuk lihat tagihan, riwayat bayar, dan bayar QRIS sendiri." },
+        { q: "Cocok untuk yang belum paham teknologi?", a: "Cocok. KosKit dibuat simpel: daftar, verifikasi email, tambah kos lewat form, langsung kelola. Ada panduan setup dan admin siap bantu lewat WhatsApp." },
+        { q: "Reminder WhatsApp gimana?", a: "Hubungkan Fonnte di Pengaturan, lalu kirim reminder massal ke yang belum bayar. Mode simulasi tersedia tanpa API key." },
+        { q: "Di mana bisa dipakai?", a: "KosKit berjalan di browser HP atau laptop — tidak perlu instalasi rumit. Cukup buka koskit.id setelah daftar." },
+        { q: "Datanya aman?", a: "Data kos hanya bisa diakses akun kamu. Kami tidak menjual data penyewa. Login dilindungi rate limit dan verifikasi email." },
       ],
     },
     cta: {
       title: "Kos kamu udah jalan — tinggal dirapikan",
-      subtitle: "Daftar, masukin data kos kamu, langsung keliatan hasilnya. Gratis 14 hari.",
+      subtitle: "Daftar gratis, masukin data kos, langsung keliatan hasilnya.",
       button: "Mulai Sekarang",
     },
     footer: { login: "Masuk", register: "Daftar" },
   },
   en: {
-    tagline: "Boarding house management, simplified",
+    tagline: "Kos management toolkit",
     nav: {
       features: "Features",
       howItWorks: "How It Works",
       pricing: "Pricing",
       faq: "FAQ",
+      support: "Support",
       login: "Log in",
       tryFree: "Try Free",
     },
     hero: {
-      titleBefore: "Rent collection sorted —",
-      titleEmphasis: "without",
-      titleAfter: "opening Excel every month-end",
+      badge: "Early Access — first 50 signups get priority onboarding",
+      titleBefore: "Manage boarding houses",
+      titleEmphasis: "without the hassle",
+      titleAfter: " — bills, WA, QRIS in one dashboard",
       subtitle:
-        "Track tenants, send WhatsApp reminders, accept QRIS payments, and see due dates on the calendar — all in one app.",
-      ctaPrimary: "Start 14-Day Free Trial",
-      ctaSecondary: "See Sample Dashboard",
+        "For owners tired of chasing rent over chat. Track tenants, send reminders, accept QRIS — all from one place.",
+      ctaPrimary: "Try Free",
+      ctaSecondary: "See Features",
       noCard: "No credit card required",
-      sampleData: "Includes sample data",
+      sampleData: "Free: 1 property · 3 rooms",
       demo: "Demo: budi@kosmelati.id",
+      scrollHint: "Scroll",
+      pills: [
+        { label: "Tenants", value: "Multi-property" },
+        { label: "Payments", value: "Auto + QRIS" },
+        { label: "Reports", value: "Real-time PDF" },
+      ],
+      mockup: {
+        month: "July 2026",
+        greeting: "Good morning, Pak Budi",
+        targetBadge: "33% target",
+        targetLine: "Revenue target Rp 10M/month",
+        sidebar: ["Dashboard", "Payments", "Tenants", "Portal", "Reports"],
+        sidebarActive: "Dashboard",
+        stats: [
+          { l: "Collected", v: "Rp 850K", c: "text-emerald-400" },
+          { l: "Outstanding", v: "Rp 2.1M", c: "text-amber-300" },
+          { l: "Occupancy", v: "80%", c: "text-white" },
+        ],
+        tenants: [
+          { n: "Andi Pratama", s: "Paid", ok: true },
+          { n: "Rina Wulandari", s: "Unpaid", ok: false },
+          { n: "Dewi Lestari", s: "Late", ok: false },
+        ],
+        floatPayment: { title: "Payment received", detail: "Room 12 · Rp 1,500,000" },
+        floatOccupancy: { title: "New tenant", value: "8 / 10 rooms" },
+        floatReminder: { title: "Reminders sent", value: "12 tenants ✓" },
+      },
+    },
+    featureGrid: {
+      title: "Everything you need",
+      subtitle: "One toolkit for tenants, payments, rooms, and financial reports",
+      items: [
+        { id: "tenants", title: "Tenant Management", desc: "Identity, contracts, deposits, and stay history — organized in one dashboard." },
+        { id: "payments", title: "Payment Tracking", desc: "Monitor monthly bills, send reminders, and accept QRIS payments." },
+        { id: "rooms", title: "Room Availability", desc: "See vacant and occupied rooms in real time across all properties." },
+        { id: "reports", title: "Financial Reports", desc: "Income, expenses, and receivables — PDF & CSV export every month." },
+      ],
+      demos: {
+        tenants: { avatars: ["A", "B", "C", "D", "E"] },
+        payments: {
+          rows: [
+            { room: "Room 12", status: "Paid", ok: true },
+            { room: "Room 8", status: "Pending", ok: false },
+            { room: "Room 3", status: "Late", ok: false },
+          ],
+        },
+        rooms: {
+          cells: [
+            { label: "01", filled: true },
+            { label: "02", filled: true },
+            { label: "03", filled: false },
+            { label: "04", filled: true },
+            { label: "05", filled: true },
+            { label: "06", filled: false },
+            { label: "07", filled: true },
+            { label: "08", filled: true },
+          ],
+        },
+        reports: {
+          title: "July 2026 Report",
+          lines: [
+            { label: "Income", value: "Rp 8.5M" },
+            { label: "Expense", value: "Rp 1.2M" },
+            { label: "Profit", value: "Rp 7.3M" },
+          ],
+        },
+      },
+    },
+    midCta: {
+      title: "Ready to organize your boarding house?",
+      subtitle: "Sign up free, verify your email, and manage from the dashboard right away.",
+      button: "Start Free Now",
+    },
+    problems: {
+      title: "Still managing the old way?",
+      subtitle: "Most boarding house owners hit the same walls every month",
+      items: [
+        {
+          title: "Messy records",
+          desc: "Tenant and payment data in notebooks or Excel — hard to track as you add rooms.",
+        },
+        {
+          title: "Forgotten invoices",
+          desc: "Without automated reminders, late payments pile up and chase-down gets exhausting.",
+        },
+        {
+          title: "Multiple properties, one brain",
+          desc: "Hard to see vacant rooms and revenue when you run more than one property.",
+        },
+      ],
+    },
+    support: {
+      title: "Questions? Chat our team",
+      subtitle: "KosKit support helps you get started — from setup to Xendit & WhatsApp integration.",
+      waCta: "Chat on WhatsApp",
+      waNote: "Fast response · English & Indonesian · Free consultation",
+      emailLabel: "Or email",
+      responseNote: "We usually reply within business hours",
     },
     stats: {
       rooms: { label: "Rooms tracked", desc: "across Indonesian cities" },
@@ -382,7 +705,7 @@ export const landingCopy: Record<Locale, LandingCopy> = {
         },
         wa: {
           sent: "Sent to 12 tenants",
-          message: "Hi Rina, Kos Melati room A2 bill Rp 850,000 due Jul 5. Pay link: kelolakos.id/bayar/...",
+          message: "Hi Rina, Kos Melati room A2 bill Rp 850,000 due Jul 5. Pay link: koskit.id/bayar/...",
           delivered: "12 sent",
           failed: "0 failed",
           pending: "3 unpaid",
@@ -410,48 +733,110 @@ export const landingCopy: Record<Locale, LandingCopy> = {
       },
     },
     workflow: {
-      title: "Start here",
-      subtitle: "Three steps — usually done in one afternoon",
+      title: "Get started in 3 easy steps",
+      subtitle: "From sign-up to automated reports — usually done in one afternoon",
       steps: [
-        { step: "01", title: "Sign up, add your property", desc: "Name, address, rooms, rent. Guided setup if it's your first time." },
-        { step: "02", title: "Add tenants", desc: "Phone, deposit, move-in date. Tenant portal link is ready — just send it." },
-        { step: "03", title: "The rest runs itself", desc: "Monthly bills, WhatsApp reminders, QRIS payments. You focus on filling vacant rooms." },
+        { step: "01", title: "Sign up & verify email", desc: "Create an account in seconds. Verify your email, then open the dashboard.", visual: "verify" },
+        { step: "02", title: "Add property & rooms", desc: "Enter your boarding house, room list, and rent prices through simple forms.", visual: "rooms" },
+        { step: "03", title: "Manage from anywhere", desc: "Track payments, room availability, and reports on phone or laptop.", visual: "manage" },
       ],
+      visuals: {
+        verify: { email: "owner@kosanda.id", verified: "Verified" },
+        rooms: { rooms: ["01", "02", "03", "04", "05", "06", "07", "08", "09"], caption: "9 rooms · 7 occupied" },
+        manage: {
+          days: ["Mon", "Tue", "Wed", "Thu"],
+          payments: [
+            { name: "Room A1", status: "Paid", ok: true },
+            { name: "Room B2", status: "Pending", ok: false },
+          ],
+        },
+      },
     },
     testimonials: {
-      title: "What owners say",
+      title: "Trusted by property owners",
       items: [
-        { name: "Pak Budi", role: "2 properties · Bandung", text: "I used to chase everyone on WhatsApp on the 5th. Now one click. Collections up, I'm less exhausted.", avatar: "PB" },
-        { name: "Bu Siti", role: "Women's boarding · Depok", text: "The calendar shows whose lease ends next month. Vacant rooms fill faster from the waitlist.", avatar: "BS" },
-        { name: "Hendra", role: "12 rooms · Surabaya", text: "Three properties in different areas. I check revenue per property on my phone — no more juggling Excel files.", avatar: "HE" },
+        {
+          name: "Pak Budi",
+          role: "2 properties, Bandung",
+          text: "Bills used to be late because I forgot manual WhatsApp reminders. Now auto-generate + reminders — collections up 30%.",
+          avatar: "PB",
+          stars: 5,
+        },
+        {
+          name: "Bu Siti",
+          role: "Women's boarding house, Depok",
+          text: "The tenant portal changed everything. They pay via QRIS themselves — I just check the dashboard.",
+          avatar: "BS",
+          stars: 5,
+        },
+        {
+          name: "Hendra",
+          role: "12 rooms, Surabaya",
+          text: "I hand the PDF report straight to my wife for bookkeeping. Much cleaner than Excel.",
+          avatar: "HE",
+          stars: 5,
+        },
       ],
     },
     pricing: {
-      title: "Monthly pricing",
-      subtitle: "14-day free trial first",
+      title: "Transparent pricing",
+      subtitle: "Start free, upgrade anytime. No credit card required.",
       popular: "Most Popular",
       perMonth: "/month",
-      cta: "Try Free First",
+      freeForever: "forever",
+      cta: "Try Free",
+      ctaFree: "Start Free",
       plans: [
-        { name: "Starter", price: 99000, desc: "For one small property", features: ["1 property", "10 rooms", "Tenant portal", "WA reminders", "PDF reports"], pop: false },
-        { name: "Pro", price: 199000, desc: "Most chosen plan", features: ["5 properties", "50 rooms", "QRIS/Midtrans", "Calendar & alerts", "Waitlist", "WA broadcast"], pop: true },
-        { name: "Business", price: 399000, desc: "For multi-property managers", features: ["Unlimited properties", "Unlimited rooms", "Staff access", "API", "Priority support", "Custom domain"], pop: false },
+        {
+          name: "Early Adopter",
+          badge: "First 50 Slots",
+          desc: "Founding users",
+          price: 0,
+          priceNote: "onboarding bonus",
+          accent: true,
+          features: ["30-day full Pro trial", "20% off upgrades forever", "Priority WA onboarding", "Early access to new features"],
+          pop: false,
+        },
+        {
+          name: "Free",
+          desc: "Start at zero",
+          price: 0,
+          features: ["1 property · 3 rooms", "Tenant management", "Payment tracking", "Manual WA reminders", "Basic reports"],
+          pop: false,
+        },
+        {
+          name: "Pro",
+          desc: "For serious owners",
+          price: 199000,
+          features: ["5 properties · 50 rooms", "Tenant portal + QRIS", "Calendar & alerts", "WA broadcast", "PDF & CSV reports"],
+          pop: true,
+        },
+        {
+          name: "Business",
+          desc: "Scale operators",
+          price: 399000,
+          features: ["Unlimited properties & rooms", "All Pro features", "Priority support", "Custom domain", "30-min onboarding call"],
+          pop: false,
+        },
       ],
     },
     faq: {
-      title: "Common questions",
+      title: "Frequently asked questions",
       items: [
-        { q: "Can I manage more than one property?", a: "Yes. Pro supports up to 5 properties, Business is unlimited. Each property has its own rooms, tenants, and reports — one dashboard." },
-        { q: "Can tenants check their own bills?", a: "Yes. Each tenant gets a portal link to view bills, payment history, and pay via QRIS without messaging you." },
-        { q: "How do WhatsApp reminders work?", a: "Connect your Fonnte account in Settings, then send reminders to unpaid tenants in one click. Simulation mode works without an API key too." },
-        { q: "Are there reports for bookkeeping?", a: "Yes. Export PDF for printing, CSV for Excel. Monthly income, expenses, and outstanding balances included." },
-        { q: "Is my data secure?", a: "Your property data is only accessible to your account. We don't sell tenant data. Login is rate-limited against brute force." },
-        { q: "Can I try before paying?", a: "Yes — 14 days free, no credit card. Sample data included so you can explore the dashboard immediately." },
+        { q: "What is KosKit?", a: "KosKit is boarding house management software for Indonesian property owners. One dashboard for tenants, bills, WhatsApp reminders, tenant portal, and financial reports." },
+        { q: "Is KosKit free?", a: "There's a forever-free plan (1 property, 3 rooms). The first 50 signups get Early Adopter bonus: 30 days of full Pro access plus an upgrade discount. Paid plans from Rp 199K/month." },
+        { q: "How is it different from Excel?", a: "Spreadsheets break down as you add rooms. KosKit unifies tenants, payments, and room status — plus automated reminders, tenant portal, and reports without manual math." },
+        { q: "Can I manage multiple properties?", a: "Yes. Pro supports 5 properties, Business is unlimited. Each property has its own rooms, tenants, and reports — one dashboard." },
+        { q: "Can tenants check their own bills?", a: "Yes. Each tenant gets a unique portal link to view bills, payment history, and pay via QRIS." },
+        { q: "Is it beginner-friendly?", a: "Yes. Sign up, verify email, add your property through simple forms, and manage from one dashboard. Setup guide and WhatsApp support included." },
+        { q: "How do WhatsApp reminders work?", a: "Connect Fonnte in Settings, then send bulk reminders to unpaid tenants. Simulation mode works without an API key." },
+        { q: "Where can I use it?", a: "KosKit runs in your phone or laptop browser — no complicated install. Just open koskit.id after signing up." },
+        { q: "Is my data secure?", a: "Your data is only accessible to your account. We don't sell tenant data. Login is protected with rate limits and email verification." },
       ],
     },
     cta: {
       title: "Your boarding house is running — time to organize it",
-      subtitle: "Sign up, add your property data, see results right away. Free for 14 days.",
+      subtitle: "Sign up free, add your property data, see results right away.",
       button: "Get Started",
     },
     footer: { login: "Log in", register: "Sign up" },

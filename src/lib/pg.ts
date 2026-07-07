@@ -6,7 +6,9 @@ declare global {
 }
 
 export function isPostgresEnabled(): boolean {
-  return !!process.env.DATABASE_URL?.trim();
+  const url = process.env.DATABASE_URL?.trim();
+  if (!url) return false;
+  return /^postgres(ql)?:\/\//i.test(url);
 }
 
 export function getPool(): Pool {

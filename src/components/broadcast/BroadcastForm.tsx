@@ -8,7 +8,7 @@ const templates = [
   { label: "Pengumuman umum", text: "Halo semua penyewa,\n\nKami informasikan bahwa...\n\nTerima kasih.\n— Manajemen Kos" },
   { label: "Jadwal pembersihan", text: "Halo,\n\nBesok akan dilakukan pembersihan area umum pukul 08.00-10.00. Mohon barang pribadi di kamar tetap aman.\n\nTerima kasih." },
   { label: "Maintenance listrik", text: "Halo,\n\nAkan ada pemadaman listrik terjadwal untuk perawatan. Mohon persiapkan diri.\n\nTerima kasih." },
-  { label: "Reminder tagihan", text: "Halo,\n\nMengingatkan tagihan sewa bulan ini jatuh tempo segera. Silakan bayar via portal penyewa atau hubungi admin.\n\nTerima kasih." },
+  { label: "Reminder tagihan", text: "Halo,\n\nMengingatkan tagihan sewa bulan ini jatuh tempo segera.\n\nBayar & cek tagihan di portal penyewa kamu (link dikirim saat daftar / reminder otomatis).\n\nTerima kasih." },
 ];
 
 export function BroadcastForm({

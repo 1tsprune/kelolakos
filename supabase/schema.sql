@@ -1,4 +1,4 @@
--- KelolaKos — PostgreSQL schema (Supabase)
+-- KosKit — PostgreSQL schema (Supabase)
 -- Jalankan seluruh file ini di SQL Editor Supabase
 
 create extension if not exists "pgcrypto";
@@ -8,10 +8,22 @@ create table if not exists users (
   id text primary key,
   name text not null,
   email text unique not null,
-  password_hash text not null,
+  password_hash text not null default '',
   phone text not null default '',
+  email_verified boolean not null default false,
+  email_verified_at timestamptz,
+  google_id text unique,
+  auth_provider text not null default 'email',
   created_at timestamptz not null default now()
 );
+
+create table if not exists email_verification_tokens (
+  email text not null,
+  token text primary key,
+  expires_at timestamptz not null,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_email_verify_email on email_verification_tokens(email);
 
 create table if not exists user_settings (
   user_id text primary key references users(id) on delete cascade,

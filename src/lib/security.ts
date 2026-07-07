@@ -83,3 +83,41 @@ export const securityHeaders: Record<string, string> = {
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
   "X-DNS-Prefetch-Control": "on",
 };
+
+const CSRF_EXEMPT_PREFIXES = ["/api/xendit/webhook", "/api/cron"];
+
+export function isCsrfExemptPath(pathname: string): boolean {
+  return CSRF_EXEMPT_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+export function verifyRequestOrigin(request: {
+  headers: { get(name: string): string | null };
+  nextUrl: { host: string };
+}): boolean {
+  const origin = request.headers.get("origin");
+  const host = request.headers.get("host") ?? request.nextUrl.host;
+  const secFetchSite = request.headers.get("sec-fetch-site");
+
+  if (secFetchSite === "same-origin" || secFetchSite === "same-site") {
+    return true;
+  }
+
+  if (!origin) {
+    return process.env.NODE_ENV !== "production";
+  }
+
+  try {
+    const originHost = new URL(origin).host;
+    if (originHost === host) return true;
+
+    const appUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.APP_URL;
+    if (appUrl) {
+      const allowedHost = new URL(appUrl).host;
+      if (originHost === allowedHost) return true;
+    }
+  } catch {
+    return false;
+  }
+
+  return false;
+}

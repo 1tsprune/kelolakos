@@ -1,9 +1,21 @@
 import type { Database, Settings } from "./types";
 
-export function trialEndDateFromNow(days = 14): string {
+export function trialEndDateFromNow(days = 30): string {
   const d = new Date();
   d.setDate(d.getDate() + days);
   return d.toISOString();
+}
+
+const LEGACY_PLAN_MAP: Record<string, Settings["subscriptionPlan"]> = {
+  trial: "early_adopter",
+  starter: "free",
+};
+
+export function normalizeSubscriptionPlan(
+  plan: string | undefined,
+): Settings["subscriptionPlan"] {
+  if (!plan) return "free";
+  return LEGACY_PLAN_MAP[plan] ?? (plan as Settings["subscriptionPlan"]);
 }
 
 export const defaultSettingsValues: Settings = {
@@ -12,15 +24,14 @@ export const defaultSettingsValues: Settings = {
   dueDayOfMonth: 5,
   monthlyRevenueTarget: 10000000,
   ownerEmail: "pemilik@koskit.id",
-  businessName: "KelolaKos",
+  businessName: "KosKit",
   ownerPhone: "",
   appUrl: "",
   whatsappTemplate: "default",
   whatsappApiKey: "",
   whatsappProvider: "fonnte",
-  midtransServerKey: "",
-  midtransClientKey: "",
-  midtransIsProduction: false,
+  xenditSecretKey: "",
+  xenditWebhookToken: "",
   defaultDeposit: 500000,
   electricityRate: 1500,
   waterRate: 5000,
@@ -28,9 +39,12 @@ export const defaultSettingsValues: Settings = {
   portalWelcomeMessage:
     "Selamat datang di portal penyewa. Bayar tagihan dan laporkan masalah di sini.",
   onboardingCompleted: false,
-  subscriptionPlan: "trial",
+  subscriptionPlan: "free",
   subscriptionStatus: "active",
-  trialEndsAt: trialEndDateFromNow(14),
+  trialEndsAt: "",
+  subscriptionEndsAt: null,
+  subscriptionOrderId: null,
+  pendingSubscriptionPlan: null,
 };
 
 export function getTrialDaysLeft(trialEndsAt: string): number {
@@ -39,26 +53,45 @@ export function getTrialDaysLeft(trialEndsAt: string): number {
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 }
 
-export function isTrialExpired(settings: Settings): boolean {
-  if (settings.subscriptionPlan !== "trial") return false;
+export function isEarlyAdopterExpired(settings: Settings): boolean {
+  if (settings.subscriptionPlan !== "early_adopter") return false;
   if (!settings.trialEndsAt) return false;
   return new Date(settings.trialEndsAt) < new Date();
 }
 
+/** @deprecated use isEarlyAdopterExpired */
+export function isTrialExpired(settings: Settings): boolean {
+  return isEarlyAdopterExpired(settings);
+}
+
 export function getSubscriptionLabel(settings: Settings): string {
   const labels: Record<Settings["subscriptionPlan"], string> = {
-    trial: "Pro Trial",
-    starter: "Starter",
+    free: "Gratis",
+    early_adopter: "Early Adopter",
     pro: "Pro",
     business: "Business",
   };
   return labels[settings.subscriptionPlan];
 }
 
+function migrateLegacySettings(overrides: Partial<Settings> & Record<string, unknown>): Partial<Settings> {
+  const result = { ...overrides };
+  if (!result.xenditSecretKey && typeof overrides.midtransServerKey === "string") {
+    result.xenditSecretKey = "";
+  }
+  delete (result as Record<string, unknown>).midtransServerKey;
+  delete (result as Record<string, unknown>).midtransClientKey;
+  delete (result as Record<string, unknown>).midtransIsProduction;
+  return result;
+}
+
 export function createDefaultSettings(overrides: Partial<Settings> = {}): Settings {
-  const merged = { ...defaultSettingsValues, ...overrides };
-  if (!merged.trialEndsAt) merged.trialEndsAt = trialEndDateFromNow(14);
-  if (!merged.subscriptionPlan) merged.subscriptionPlan = "trial";
+  const merged = { ...defaultSettingsValues, ...migrateLegacySettings(overrides as Partial<Settings> & Record<string, unknown>) };
+  if (overrides.subscriptionPlan) {
+    merged.subscriptionPlan = normalizeSubscriptionPlan(overrides.subscriptionPlan);
+  } else if (!merged.subscriptionPlan) {
+    merged.subscriptionPlan = "free";
+  }
   if (!merged.subscriptionStatus) merged.subscriptionStatus = "active";
   return merged;
 }
@@ -81,7 +114,11 @@ export function migrateSettings(raw: unknown): Record<string, Settings> {
   const result: Record<string, Settings> = {};
   for (const [userId, value] of Object.entries(obj)) {
     if (value && typeof value === "object") {
-      result[userId] = createDefaultSettings(value as Partial<Settings>);
+      const partial = value as Partial<Settings> & { subscriptionPlan?: string };
+      if (partial.subscriptionPlan) {
+        partial.subscriptionPlan = normalizeSubscriptionPlan(partial.subscriptionPlan);
+      }
+      result[userId] = createDefaultSettings(partial);
     }
   }
 
@@ -121,8 +158,14 @@ export function resolveAppUrl(settings: Settings, fallback?: string): string {
   return "http://localhost:3000";
 }
 
-export function midtransConfigured(settings: Settings): boolean {
-  return !!settings.midtransServerKey?.trim() && !!settings.midtransClientKey?.trim();
+export function xenditConfigured(settings: Settings): boolean {
+  return !!settings.xenditSecretKey?.trim();
+}
+
+export function xenditModeLabel(settings: Settings): string {
+  const key = settings.xenditSecretKey?.trim() ?? "";
+  if (!key) return "Mode demo";
+  return key.startsWith("xnd_production_") ? "Production" : "Test";
 }
 
 export function whatsappConfigured(settings: Settings): boolean {

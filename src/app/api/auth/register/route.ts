@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSession, registerUser, loginUser } from "@/lib/auth";
-import { welcomeEmailHtml, sendEmail } from "@/lib/email";
+import { registerUser } from "@/lib/auth";
+import { createVerificationToken, saveVerificationToken } from "@/lib/email-verification";
+import { verifyEmailHtml, sendEmail } from "@/lib/email";
 import { checkRateLimit, validatePassword } from "@/lib/security";
 import { site } from "@/lib/site";
 
@@ -20,17 +21,24 @@ export async function POST(request: NextRequest) {
   }
   const passwordError = validatePassword(password ?? "");
   if (passwordError) return NextResponse.json({ error: passwordError }, { status: 400 });
+
   const reg = await registerUser({ name, email, password, phone });
   if (!reg.ok) return NextResponse.json({ error: reg.error }, { status: 400 });
-  const login = await loginUser(email, password);
-  if (login.ok && login.user) {
-    await createSession(login.user);
-    void sendEmail({
-      to: email,
-      subject: `Selamat datang di ${site.name}!`,
-      html: welcomeEmailHtml(name),
-      text: `Selamat datang di ${site.name}. Mulai setup di ${site.url}/mulai`,
-    });
+
+  const token = createVerificationToken();
+  await saveVerificationToken(email, token);
+  const verifyUrl = `${site.url}/verifikasi-email?token=${token}`;
+
+  const mail = await sendEmail({
+    to: email,
+    subject: `Verifikasi email ${site.name}`,
+    html: verifyEmailHtml(name, verifyUrl),
+    text: `Verifikasi email ${site.name}: ${verifyUrl}`,
+  });
+
+  if (!mail.ok && process.env.NODE_ENV === "production") {
+    return NextResponse.json({ error: mail.error ?? "Gagal mengirim email verifikasi" }, { status: 500 });
   }
-  return NextResponse.json({ ok: true });
+
+  return NextResponse.json({ ok: true, needsVerification: true, email });
 }

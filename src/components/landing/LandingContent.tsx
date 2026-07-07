@@ -1,22 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check, ChevronRight, Clock, X } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, ChevronRight, Clock, MessageCircle, Mail, Star, X } from "lucide-react";
+import { SupportWhatsAppFab } from "@/components/SupportWhatsAppFab";
 import { CityMarquee } from "@/components/landing/CityMarquee";
 import { DashboardMockup } from "@/components/landing/DashboardMockup";
 import { FAQ } from "@/components/landing/FAQ";
+import { FeatureGrid } from "@/components/landing/FeatureGrid";
 import { FeatureScrollStory } from "@/components/landing/FeatureScrollStory";
 import { LanguageToggle } from "@/components/landing/LanguageToggle";
 import { useLandingLocale } from "@/components/landing/LocaleProvider";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
-import { StatCounter } from "@/components/landing/StatCounter";
-import { faqJsonLd, organizationJsonLd } from "@/lib/seo";
-import { site } from "@/lib/site";
+import { WorkflowStepVisual } from "@/components/landing/WorkflowStepVisual";
+import { faqJsonLd, organizationJsonLd, softwareApplicationJsonLd, websiteJsonLd } from "@/lib/seo";
+import { site, supportWhatsAppUrl } from "@/lib/site";
+
+function formatPrice(price: number): string {
+  if (price === 0) return "Rp 0";
+  return `Rp${(price / 1000).toFixed(0)}rb`;
+}
 
 export function LandingContent() {
   const { t } = useLandingLocale();
   const jsonLd = [
     organizationJsonLd(),
+    websiteJsonLd(),
+    softwareApplicationJsonLd(),
     faqJsonLd(t.faq.items.map((item) => ({ question: item.q, answer: item.a }))),
   ];
 
@@ -43,6 +52,7 @@ export function LandingContent() {
             <a href="#cara-kerja" className="text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--ink)]">{t.nav.howItWorks}</a>
             <a href="#harga" className="text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--ink)]">{t.nav.pricing}</a>
             <a href="#faq" className="text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--ink)]">{t.nav.faq}</a>
+            <a href="#bantuan" className="text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--ink)]">{t.nav.support}</a>
           </div>
           <div className="flex items-center gap-2.5">
             <LanguageToggle />
@@ -63,9 +73,13 @@ export function LandingContent() {
 
         <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 py-16 lg:grid-cols-2 lg:py-24">
           <div className="animate-fade-up">
-            <h1 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-200">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+              {t.hero.badge}
+            </span>
+            <h1 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.1rem]">
               {t.hero.titleBefore}{" "}
-              <span className="text-shimmer italic">{t.hero.titleEmphasis}</span>{" "}
+              <span className="text-shimmer italic">{t.hero.titleEmphasis}</span>
               {t.hero.titleAfter}
             </h1>
 
@@ -75,9 +89,9 @@ export function LandingContent() {
               <Link href="/daftar" className="group inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[var(--accent)]/25 transition-transform hover:scale-[1.02] hover:bg-[var(--accent-hover)]">
                 {t.hero.ctaPrimary} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-              <Link href="/masuk" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/10">
+              <a href="#fitur" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/10">
                 {t.hero.ctaSecondary} <ChevronRight className="h-4 w-4" />
-              </Link>
+              </a>
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/40">
@@ -85,23 +99,49 @@ export function LandingContent() {
               <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-[var(--success)]" /> {t.hero.sampleData}</span>
               <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> {t.hero.demo}</span>
             </div>
+
+            <div className="mt-8 grid max-w-md grid-cols-3 gap-3 border-t border-white/10 pt-6">
+              {t.hero.pills.map((pill) => (
+                <div key={pill.label}>
+                  <p className="text-[10px] font-medium uppercase tracking-wide text-white/35">{pill.label}</p>
+                  <p className="text-sm font-bold text-white">{pill.value}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <DashboardMockup />
         </div>
+
+        <a
+          href="#masalah"
+          className="relative mx-auto mb-8 flex flex-col items-center gap-1 text-white/30 transition-colors hover:text-white/50"
+        >
+          <span className="text-[10px] font-semibold uppercase tracking-widest">{t.hero.scrollHint}</span>
+          <ChevronDown className="h-5 w-5 animate-scroll-hint" />
+        </a>
       </section>
 
       <CityMarquee />
 
-      <section className="border-b border-[var(--border)] bg-white py-12">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 md:grid-cols-4">
-          <StatCounter value={2400} suffix="+" label={t.stats.rooms.label} desc={t.stats.rooms.desc} />
-          <StatCounter value={98} suffix="%" label={t.stats.faster.label} desc={t.stats.faster.desc} />
-          <StatCounter value={18} label={t.stats.modules.label} desc={t.stats.modules.desc} />
-          <div className="text-center md:text-left">
-            <p className="font-display text-4xl font-bold text-[var(--ink)]">Rp 99rb</p>
-            <p className="mt-1 text-sm font-bold text-[var(--ink)]">{t.stats.from}</p>
-            <p className="text-xs text-[var(--muted)]">{t.stats.perMonth}</p>
+      <section id="masalah" className="border-b border-[var(--border)] bg-white py-16">
+        <div className="mx-auto max-w-6xl px-6">
+          <ScrollReveal>
+            <div className="text-center">
+              <h2 className="font-display text-3xl font-bold text-[var(--ink)]">{t.problems.title}</h2>
+              <p className="mx-auto mt-3 max-w-lg text-[var(--muted)]">{t.problems.subtitle}</p>
+            </div>
+          </ScrollReveal>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {t.problems.items.map((item, i) => (
+              <ScrollReveal key={item.title} delay={i * 80}>
+                <div className="bento-card h-full p-6">
+                  <span className="font-display text-3xl font-black text-[var(--accent)]/20">{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className="mt-2 text-lg font-bold text-[var(--ink)]">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{item.desc}</p>
+                </div>
+              </ScrollReveal>
+            ))}
           </div>
         </div>
       </section>
@@ -135,6 +175,23 @@ export function LandingContent() {
         </ScrollReveal>
       </section>
 
+      <FeatureGrid />
+
+      <section className="bg-[var(--ink)] py-14">
+        <ScrollReveal>
+          <div className="mx-auto max-w-3xl px-6 text-center">
+            <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">{t.midCta.title}</h2>
+            <p className="mt-3 text-white/55">{t.midCta.subtitle}</p>
+            <Link
+              href="/daftar"
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[var(--accent)]/30 transition-transform hover:scale-[1.02]"
+            >
+              {t.midCta.button} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </ScrollReveal>
+      </section>
+
       <section id="fitur" className="bg-white py-14">
         <div className="mx-auto max-w-6xl px-6">
           <FeatureScrollStory />
@@ -156,6 +213,7 @@ export function LandingContent() {
                   <span className="font-display text-6xl font-black text-[var(--paper-dark)]">{w.step}</span>
                   <h3 className="mt-2 text-lg font-bold text-[var(--ink)]">{w.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{w.desc}</p>
+                  <WorkflowStepVisual type={w.visual} />
                 </div>
               </ScrollReveal>
             ))}
@@ -172,6 +230,13 @@ export function LandingContent() {
             {t.testimonials.items.map((item, i) => (
               <ScrollReveal key={item.name} delay={i * 80}>
                 <div className="bento-card h-full p-6">
+                  {item.stars ? (
+                    <div className="mb-3 flex gap-0.5">
+                      {Array.from({ length: item.stars }).map((_, starIdx) => (
+                        <Star key={starIdx} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                  ) : null}
                   <div className="mb-4 flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--ink)] text-xs font-bold text-[var(--accent)]">
                       {item.avatar}
@@ -197,45 +262,93 @@ export function LandingContent() {
               <p className="mt-2 text-[var(--muted)]">{t.pricing.subtitle}</p>
             </div>
           </ScrollReveal>
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {t.pricing.plans.map((plan, i) => (
-              <ScrollReveal key={plan.name} delay={i * 100}>
+              <ScrollReveal key={plan.name} delay={i * 80}>
                 <div
-                  className={`relative h-full rounded-2xl p-8 transition-transform hover:scale-[1.02] ${
-                    plan.pop ? "bg-[var(--ink)] text-white ring-2 ring-[var(--accent)] shadow-xl shadow-[var(--ink)]/20" : "bento-card"
+                  className={`relative flex h-full flex-col rounded-2xl p-6 transition-transform hover:scale-[1.02] ${
+                    plan.pop
+                      ? "bg-[var(--ink)] text-white ring-2 ring-[var(--accent)] shadow-xl shadow-[var(--ink)]/20"
+                      : plan.accent
+                        ? "border-2 border-amber-300 bg-amber-50/50"
+                        : "bento-card"
                   }`}
                 >
+                  {plan.badge && (
+                    <span className="absolute -top-3 left-4 rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-bold text-white">
+                      {plan.badge}
+                    </span>
+                  )}
                   {plan.pop && (
                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--accent)] px-4 py-1 text-xs font-bold text-white">
                       {t.pricing.popular}
                     </span>
                   )}
-                  <h3 className="text-xl font-bold">{plan.name}</h3>
+                  <h3 className="text-lg font-bold">{plan.name}</h3>
                   <p className={`mt-1 text-sm ${plan.pop ? "text-white/50" : "text-[var(--muted)]"}`}>{plan.desc}</p>
                   <div className="mt-4">
-                    <span className="font-display text-4xl font-bold">Rp{(plan.price / 1000).toFixed(0)}rb</span>
-                    <span className={plan.pop ? "text-white/50" : "text-[var(--muted)]"}>{t.pricing.perMonth}</span>
+                    <span className="font-display text-3xl font-bold">{formatPrice(plan.price)}</span>
+                    {plan.price === 0 ? (
+                      <span className={`ml-1 text-sm ${plan.pop ? "text-white/50" : "text-[var(--muted)]"}`}>
+                        {plan.priceNote ?? t.pricing.freeForever}
+                      </span>
+                    ) : (
+                      <span className={plan.pop ? "text-white/50" : "text-[var(--muted)]"}>{t.pricing.perMonth}</span>
+                    )}
                   </div>
-                  <ul className="mt-6 space-y-2.5">
+                  <ul className="mt-5 flex-1 space-y-2">
                     {plan.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2 text-sm">
-                        <Check className={`h-4 w-4 shrink-0 ${plan.pop ? "text-[var(--accent)]" : "text-[var(--teal)]"}`} />
+                      <li key={f} className="flex items-start gap-2 text-xs leading-relaxed">
+                        <Check className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${plan.pop ? "text-[var(--accent)]" : "text-[var(--teal)]"}`} />
                         {f}
                       </li>
                     ))}
                   </ul>
                   <Link
                     href="/daftar"
-                    className={`mt-8 block rounded-xl py-3 text-center text-sm font-bold transition-colors ${
-                      plan.pop ? "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]" : "border border-[var(--border)] hover:bg-[var(--paper)]"
+                    className={`mt-6 block rounded-xl py-3 text-center text-sm font-bold transition-colors ${
+                      plan.pop
+                        ? "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"
+                        : plan.accent
+                          ? "bg-amber-500 text-white hover:bg-amber-600"
+                          : "border border-[var(--border)] hover:bg-[var(--paper)]"
                     }`}
                   >
-                    {t.pricing.cta}
+                    {plan.price === 0 ? t.pricing.ctaFree : t.pricing.cta}
                   </Link>
                 </div>
               </ScrollReveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section id="bantuan" className="bg-white py-20">
+        <div className="mx-auto max-w-4xl px-6">
+          <ScrollReveal>
+            <div className="overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--paper)] p-8 text-center md:p-12">
+              <h2 className="font-display text-3xl font-bold text-[var(--ink)]">{t.support.title}</h2>
+              <p className="mx-auto mt-3 max-w-lg text-[var(--muted)]">{t.support.subtitle}</p>
+              <a
+                href={supportWhatsAppUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-8 py-4 text-base font-bold text-white shadow-lg shadow-[#25D366]/25 transition-transform hover:scale-[1.02]"
+              >
+                <MessageCircle className="h-5 w-5" />
+                {t.support.waCta}
+              </a>
+              <p className="mt-3 text-xs text-[var(--muted)]">{t.support.waNote}</p>
+              <div className="mt-8 flex flex-col items-center gap-2 border-t border-[var(--border)] pt-6">
+                <p className="text-sm text-[var(--muted)]">{t.support.emailLabel}</p>
+                <a href={`mailto:${site.contactEmail}`} className="inline-flex items-center gap-2 font-semibold text-[var(--accent)] hover:underline">
+                  <Mail className="h-4 w-4" />
+                  {site.contactEmail}
+                </a>
+                <p className="text-xs text-[var(--muted)]">{t.support.responseNote}</p>
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -278,6 +391,7 @@ export function LandingContent() {
             </div>
             <p className="text-sm text-[var(--muted)]">© 2026 {site.name}</p>
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-semibold text-[var(--muted)] md:gap-6">
+              <Link href="/aplikasi-manajemen-kos" className="hover:text-[var(--ink)]">Aplikasi Manajemen Kos</Link>
               <Link href="/kebijakan-privasi" className="hover:text-[var(--ink)]">Privasi</Link>
               <Link href="/syarat-ketentuan" className="hover:text-[var(--ink)]">Syarat</Link>
               <Link href="/masuk" className="hover:text-[var(--ink)]">{t.footer.login}</Link>
@@ -286,6 +400,8 @@ export function LandingContent() {
           </div>
         </div>
       </footer>
+
+      <SupportWhatsAppFab />
     </div>
   );
 }

@@ -3,13 +3,17 @@ import { getSettings } from "@/lib/queries";
 import {
   getSubscriptionLabel,
   getTrialDaysLeft,
-  isTrialExpired,
-  midtransConfigured,
+  isEarlyAdopterExpired,
+  xenditConfigured,
+  xenditModeLabel,
   resolveAppUrl,
   whatsappConfigured,
 } from "@/lib/settings";
 import { CopyButton } from "@/components/CopyButton";
 import { IntegrationTestButton } from "@/components/IntegrationTestButton";
+import { UpgradePlans } from "@/components/UpgradePlans";
+import { billingConfigured } from "@/lib/subscription-billing";
+import { getPlanLimits, isSubscriptionLocked } from "@/lib/subscription";
 import { Card, PageTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input, Select, Textarea } from "@/components/ui/Input";
@@ -24,12 +28,19 @@ import {
   Users,
 } from "lucide-react";
 
-export default async function PengaturanPage() {
+export default async function PengaturanPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ locked?: string }>;
+}) {
+  const { locked } = await searchParams;
   const settings = await getSettings();
   const appUrl = resolveAppUrl(settings);
-  const webhookUrl = `${appUrl}/api/midtrans/webhook`;
-  const hasMidtrans = midtransConfigured(settings);
+  const webhookUrl = `${appUrl}/api/xendit/webhook`;
+  const hasXendit = xenditConfigured(settings);
   const hasWhatsapp = whatsappConfigured(settings);
+  const limits = getPlanLimits(settings.subscriptionPlan);
+  const lockedOut = isSubscriptionLocked(settings);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -37,6 +48,18 @@ export default async function PengaturanPage() {
         title="Pengaturan"
         description="Semua konfigurasi bisnis & integrasi — tanpa perlu edit file env"
       />
+
+      {(locked === "1" || lockedOut) && (
+        <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4">
+          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+          <div>
+            <p className="font-bold text-red-900">Akses terbatas — langganan perlu diperpanjang</p>
+            <p className="mt-1 text-sm text-red-800">
+              Trial habis atau paket kedaluwarsa. Pilih paket di bawah untuk melanjutkan semua fitur dashboard.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-3 sm:grid-cols-3">
         <StatusCard
@@ -50,9 +73,9 @@ export default async function PengaturanPage() {
           detail={hasWhatsapp ? (settings.whatsappProvider === "manual" ? "Mode manual" : "Terhubung") : "Mode simulasi"}
         />
         <StatusCard
-          ok={hasMidtrans}
-          label="Midtrans"
-          detail={hasMidtrans ? (settings.midtransIsProduction ? "Production" : "Sandbox") : "Mode demo"}
+          ok={hasXendit}
+          label="Xendit"
+          detail={hasXendit ? xenditModeLabel(settings) : "Mode demo"}
         />
       </div>
 
@@ -73,7 +96,7 @@ export default async function PengaturanPage() {
                 placeholder="https://kos.saya.com"
               />
               <p className="mt-1.5 text-xs text-[var(--muted)]">
-                Dipakai untuk link bayar, portal penyewa, dan webhook Midtrans. Contoh: https://kos.saya.com
+                Dipakai untuk link bayar, portal penyewa, dan webhook Xendit. Contoh: https://kos.saya.com
               </p>
             </div>
           </section>
@@ -102,8 +125,13 @@ export default async function PengaturanPage() {
             </div>
             <label className="flex items-center gap-2 text-sm text-[var(--ink)]">
               <input type="checkbox" name="autoReminderEnabled" defaultChecked={settings.autoReminderEnabled} />
-              Aktifkan reminder otomatis via WhatsApp
+              Aktifkan otomatis: generate tagihan, kirim portal & reminder WA
             </label>
+            <p className="text-xs leading-relaxed text-[var(--muted)]">
+              Jika aktif + Fonnte terhubung: tagihan bulan ini dibuat otomatis, link portal dikirim saat penyewa baru masuk,
+              reminder H-{settings.reminderDaysBefore} sebelum jatuh tempo, dan notifikasi tagihan di hari jatuh tempo.
+              Butuh <code className="rounded bg-white px-1">CRON_SECRET</code> di server (cron harian).
+            </p>
           </section>
 
           <hr className="border-[var(--border)]" />
@@ -144,27 +172,24 @@ export default async function PengaturanPage() {
           <hr className="border-[var(--border)]" />
 
           <section className="space-y-4">
-            <SectionTitle icon={CreditCard} title="Midtrans Snap" />
+            <SectionTitle icon={CreditCard} title="Xendit" />
             <div className="rounded-xl bg-[var(--paper)] p-4 text-sm text-[var(--muted)]">
-              <p className="font-semibold text-[var(--ink)]">Cara setup Midtrans</p>
+              <p className="font-semibold text-[var(--ink)]">Cara setup Xendit</p>
               <ol className="mt-2 list-decimal space-y-1.5 pl-4 text-xs leading-relaxed">
-                <li>Daftar merchant di <strong>dashboard.midtrans.com</strong></li>
-                <li>Ambil <strong>Server Key</strong> & <strong>Client Key</strong> — mulai dari Sandbox</li>
-                <li>Di Midtrans → Settings → Webhook, paste URL di bawah</li>
-                <li>Isi key di bawah → Simpan → klik <strong>Tes Koneksi</strong></li>
+                <li>Daftar di <strong>dashboard.xendit.co</strong></li>
+                <li>Ambil <strong>Secret API Key</strong> (Test dulu: <code>xnd_development_...</code>)</li>
+                <li>Di Xendit → Settings → Webhooks → tambah URL di bawah, event <strong>invoices.paid</strong></li>
+                <li>Salin <strong>Callback Verification Token</strong> ke field Webhook Token</li>
+                <li>Simpan → klik <strong>Tes Koneksi</strong></li>
               </ol>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <code className="rounded-lg bg-white px-2 py-1 text-xs text-[var(--ink)]">{webhookUrl}</code>
                 <CopyButton text={webhookUrl} />
               </div>
             </div>
-            <Input label="Server Key" name="midtransServerKey" type="password" defaultValue={settings.midtransServerKey} placeholder="SB-Mid-server-..." />
-            <Input label="Client Key" name="midtransClientKey" defaultValue={settings.midtransClientKey} placeholder="SB-Mid-client-..." />
-            <label className="flex items-center gap-2 text-sm text-[var(--ink)]">
-              <input type="checkbox" name="midtransIsProduction" defaultChecked={settings.midtransIsProduction} />
-              Mode Production (centang hanya setelah sandbox lolos tes)
-            </label>
-            <IntegrationTestButton type="midtrans" />
+            <Input label="Secret API Key" name="xenditSecretKey" type="password" defaultValue={settings.xenditSecretKey} placeholder="xnd_development_..." />
+            <Input label="Webhook Token" name="xenditWebhookToken" type="password" defaultValue={settings.xenditWebhookToken} placeholder="Token dari dashboard Xendit" />
+            <IntegrationTestButton type="xendit" />
           </section>
 
           <hr className="border-[var(--border)]" />
@@ -180,7 +205,7 @@ export default async function PengaturanPage() {
             <div className="flex items-start gap-2 rounded-xl bg-[var(--teal-soft)] p-3 text-xs text-[var(--teal)]">
               <Globe className="mt-0.5 h-4 w-4 shrink-0" />
               <p>
-                Link portal penyewa: <strong>{appUrl}/portal/[token]</strong> — token unik per penyewa, bisa disalin dari halaman Penyewa.
+                Link portal: <strong>{appUrl}/portal/[token]</strong> — unik per penyewa. Otomatis dikirim via WA saat penyewa baru ditambah (jika reminder otomatis aktif).
               </p>
             </div>
           </section>
@@ -192,26 +217,40 @@ export default async function PengaturanPage() {
       </Card>
 
       <Card className="p-6">
-        <h3 className="font-bold text-[var(--ink)]">Paket Langganan</h3>
+        <h3 className="flex items-center gap-2 font-bold text-[var(--ink)]">
+          <CreditCard className="h-5 w-5 text-[var(--accent)]" />
+          Paket Langganan
+        </h3>
         <div className="mt-4 rounded-2xl bg-[var(--ink)] p-6 text-white">
           <p className="text-sm text-white/50">Paket aktif</p>
           <p className="font-display text-2xl font-bold">{getSubscriptionLabel(settings)}</p>
-          {settings.subscriptionPlan === "trial" ? (
+          {settings.subscriptionPlan === "free" ? (
             <p className="mt-1 text-sm text-white/60">
-              {isTrialExpired(settings)
-                ? "Trial sudah habis"
+              {limits.maxProperties} properti · {limits.maxRooms} kamar · Upgrade kapan saja
+            </p>
+          ) : settings.subscriptionPlan === "early_adopter" ? (
+            <p className="mt-1 text-sm text-white/60">
+              {isEarlyAdopterExpired(settings)
+                ? "Masa Early Adopter habis — lanjut paket Gratis"
                 : `${getTrialDaysLeft(settings.trialEndsAt)} hari tersisa`}{" "}
-              · Trial: 5 properti · 50 kamar
+              · {limits.maxProperties} properti · {limits.maxRooms} kamar
             </p>
           ) : (
-            <p className="mt-1 text-sm text-white/60">Status: {settings.subscriptionStatus}</p>
+            <p className="mt-1 text-sm text-white/60">
+              Status: {settings.subscriptionStatus}
+              {settings.subscriptionEndsAt &&
+                ` · Berlaku sampai ${new Date(settings.subscriptionEndsAt).toLocaleDateString("id-ID")}`}
+              {limits.maxProperties
+                ? ` · ${limits.maxProperties} properti · ${limits.maxRooms} kamar`
+                : " · Tanpa batas properti & kamar"}
+            </p>
           )}
-          <p className="mt-3 text-xs text-white/40">
-            Upgrade paket (Starter Rp 99rb · Pro Rp 199rb · Business Rp 399rb) — billing online segera hadir.
-          </p>
-          <Button variant="secondary" className="mt-4 border-white/20 bg-white/10 text-white hover:bg-white/20" disabled>
-            Upgrade — Segera Hadir
-          </Button>
+        </div>
+        <div className="mt-6">
+          <UpgradePlans
+            currentPlan={settings.subscriptionPlan}
+            billingReady={billingConfigured()}
+          />
         </div>
       </Card>
     </div>

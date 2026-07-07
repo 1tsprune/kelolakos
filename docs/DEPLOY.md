@@ -1,4 +1,4 @@
-# Deploy KelolaKos — Checklist Production
+# Deploy KosKit — Checklist Production
 
 ## 1. Environment variables
 
@@ -7,7 +7,13 @@ Copy `.env.example` → `.env` di server/hosting:
 | Variable | Wajib | Keterangan |
 |----------|-------|------------|
 | `AUTH_SECRET` | ✅ | `openssl rand -base64 32` |
-| `NEXT_PUBLIC_SITE_URL` | ✅ | `https://kelolakos.id` |
+| `NEXT_PUBLIC_SITE_URL` | ✅ | `https://koskit.id` atau `https://app.koskit.id` |
+| `GOOGLE_CLIENT_ID` | ✅* | Login dengan Google |
+| `GOOGLE_CLIENT_SECRET` | ✅* | Pair dengan client ID |
+| `NEXT_PUBLIC_GOOGLE_LOGIN_ENABLED` | ✅* | `true` saat Google OAuth aktif |
+| `SUPPORT_WHATSAPP` | ✅ | `6287863520135` |
+| `BILLING_XENDIT_SECRET_KEY` | ✅* | Xendit platform untuk upgrade paket |
+| `BILLING_XENDIT_WEBHOOK_TOKEN` | ✅* | Callback token dari dashboard Xendit |
 | `NEXT_PUBLIC_APP_URL` | ✅ | Sama dengan SITE_URL |
 | `RESEND_API_KEY` | ✅* | Forgot password & welcome email |
 | `EMAIL_FROM` | ✅* | Verified domain di Resend |
@@ -41,16 +47,19 @@ npm run start
 
 ## 3. Domain & HTTPS
 
+> **Brand:** KosKit — beli domain `koskit.id` / `koskit.app` di Niagahoster atau Cloudflare.
+
 - Arahkan DNS ke hosting
 - Pastikan HTTPS aktif
+- Set `NEXT_PUBLIC_SITE_URL` ke domain final
 - Isi **URL Aplikasi** di Pengaturan dashboard setelah deploy
 
-## 4. Midtrans production
+## 4. Xendit production
 
-1. Verifikasi merchant Midtrans
-2. Set webhook: `https://domain-kamu.id/api/midtrans/webhook`
-3. Isi Server Key & Client Key di Pengaturan
-4. Centang Mode Production setelah sandbox lolos tes
+1. Verifikasi akun Xendit (KYC)
+2. Set webhook: `https://domain-kamu.id/api/xendit/webhook` — event `invoices.paid`
+3. Salin callback token ke `BILLING_XENDIT_WEBHOOK_TOKEN` (billing SaaS) dan/atau Pengaturan (BYOK penyewa)
+4. Isi Secret API Key di Pengaturan — pakai key `xnd_production_...` setelah sandbox lolos tes
 
 ## 5. WhatsApp (Fonnte)
 
@@ -60,8 +69,8 @@ npm run start
 
 ## 6. Email (Resend)
 
-1. Verifikasi domain `kelolakos.id`
-2. Set `EMAIL_FROM=KelolaKos <noreply@kelolakos.id>`
+1. Verifikasi domain email kamu di Resend
+2. Set `EMAIL_FROM=KosKit <noreply@koskit.id>`
 3. Tes forgot password di `/lupa-password`
 
 ## 7. Keamanan
@@ -94,4 +103,4 @@ Set `SENTRY_DSN` di environment.
 - [ ] Onboarding `/mulai`
 - [ ] Generate tagihan + PDF laporan
 - [ ] Portal penyewa `/portal/[token]`
-- [ ] Webhook Midtrans (sandbox dulu)
+- [ ] Webhook Xendit (sandbox dulu)

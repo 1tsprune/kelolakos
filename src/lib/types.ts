@@ -5,6 +5,10 @@ export type User = {
   passwordHash: string;
   phone: string;
   createdAt: string;
+  emailVerified: boolean;
+  emailVerifiedAt: string | null;
+  googleId: string | null;
+  authProvider: "email" | "google";
 };
 
 export type Property = {
@@ -81,8 +85,12 @@ export type Payment = {
   paidAt: string | null;
   status: "belum" | "lunas" | "terlambat";
   proofPhotoUrl: string | null;
-  midtransOrderId: string | null;
+  paymentOrderId: string | null;
   notes: string | null;
+  /** WA tagihan jatuh tempo terkirim */
+  waBillSentAt: string | null;
+  /** WA reminder H-x terkirim */
+  waReminderSentAt: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -160,18 +168,20 @@ export type Settings = {
   whatsappTemplate: string;
   whatsappApiKey: string;
   whatsappProvider: "fonnte" | "waba" | "manual";
-  midtransServerKey: string;
-  midtransClientKey: string;
-  midtransIsProduction: boolean;
+  xenditSecretKey: string;
+  xenditWebhookToken: string;
   defaultDeposit: number;
   electricityRate: number;
   waterRate: number;
   autoReminderEnabled: boolean;
   portalWelcomeMessage: string;
   onboardingCompleted: boolean;
-  subscriptionPlan: "trial" | "starter" | "pro" | "business";
+  subscriptionPlan: "free" | "early_adopter" | "pro" | "business";
   subscriptionStatus: "active" | "expired" | "cancelled";
   trialEndsAt: string;
+  subscriptionEndsAt: string | null;
+  subscriptionOrderId: string | null;
+  pendingSubscriptionPlan: "pro" | "business" | null;
 };
 
 export type InventoryItem = {

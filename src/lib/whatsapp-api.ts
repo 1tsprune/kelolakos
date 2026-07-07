@@ -1,7 +1,11 @@
 import { getSessionUserId } from "./auth";
-import { getUserSettings } from "./settings";
+import { getUserSettings, resolveAppUrl } from "./settings";
 import { readDb, writeDb, newId, now, enrichPayments } from "./store";
-import { buildPaymentReminderMessage } from "./whatsapp";
+import {
+  buildPaymentPageUrl,
+  buildPaymentReminderMessage,
+  buildTenantPortalUrl,
+} from "./whatsapp";
 
 export async function sendWhatsAppMessage(
   phone: string,
@@ -55,6 +59,7 @@ export async function sendBulkReminders(): Promise<{
   const db = await readDb();
   const userId = await getSessionUserId();
   const settings = getUserSettings(db, userId);
+  const appUrl = resolveAppUrl(settings);
   const pids = new Set(db.properties.filter((p) => p.userId === userId).map((p) => p.id));
   const roomIds = new Set(db.rooms.filter((r) => pids.has(r.propertyId)).map((r) => r.id));
   const nowDate = new Date();
@@ -76,9 +81,10 @@ export async function sendBulkReminders(): Promise<{
   let simulated = !settings.whatsappApiKey?.trim() || settings.whatsappProvider === "manual";
 
   for (const payment of unpaid) {
+    const portalUrl = buildTenantPortalUrl(appUrl, payment.tenant.portalToken);
+    const paymentUrl = buildPaymentPageUrl(appUrl, payment.id);
     const message = buildPaymentReminderMessage({
       tenantName: payment.tenant.name,
-      tenantPhone: payment.tenant.phone,
       propertyName: payment.room.property.name,
       roomNumber: payment.room.number,
       amount: payment.amount + payment.lateFee,
@@ -86,6 +92,9 @@ export async function sendBulkReminders(): Promise<{
       periodYear: payment.periodYear,
       dueDate: payment.dueDate,
       ownerName: payment.room.property.ownerName,
+      portalUrl,
+      paymentUrl,
+      variant: "reminder",
     });
     const result = await sendWhatsAppMessage(
       payment.tenant.phone,

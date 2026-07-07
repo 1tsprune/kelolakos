@@ -1,46 +1,47 @@
 import type { Settings } from "./types";
+import { isXenditProductionKey, xenditAuthHeader } from "./xendit";
 
-function midtransBase(isProduction: boolean) {
-  return isProduction ? "https://app.midtrans.com" : "https://app.sandbox.midtrans.com";
-}
+const XENDIT_API = "https://api.xendit.co";
 
-export async function testMidtransConnection(settings: Settings): Promise<{
+export async function testXenditConnection(settings: Settings): Promise<{
   ok: boolean;
   message: string;
-  mode: "sandbox" | "production" | "demo";
+  mode: "test" | "production" | "demo";
 }> {
-  const serverKey = settings.midtransServerKey?.trim();
-  const clientKey = settings.midtransClientKey?.trim();
+  const secretKey = settings.xenditSecretKey?.trim();
 
-  if (!serverKey || !clientKey) {
+  if (!secretKey) {
     return {
       ok: false,
-      message: "Server Key & Client Key belum diisi. Kosongkan = mode demo (simulasi bayar).",
+      message: "Secret API Key belum diisi. Kosongkan = mode demo (simulasi bayar).",
       mode: "demo",
     };
   }
 
-  const isProduction = settings.midtransIsProduction;
   const orderId = `TEST-${Date.now().toString(36)}`;
+  const isProduction = isXenditProductionKey(secretKey);
 
   try {
-    const res = await fetch(`${midtransBase(isProduction)}/snap/v1/transactions`, {
+    const res = await fetch(`${XENDIT_API}/v2/invoices`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Basic ${Buffer.from(`${serverKey}:`).toString("base64")}`,
+        Authorization: xenditAuthHeader(secretKey),
       },
       body: JSON.stringify({
-        transaction_details: { order_id: orderId, gross_amount: 10000 },
-        credit_card: { secure: true },
+        external_id: orderId,
+        amount: 10000,
+        description: "Tes koneksi KosKit",
+        invoice_duration: 300,
+        currency: "IDR",
       }),
     });
 
     if (res.status === 401 || res.status === 403) {
       return {
         ok: false,
-        message: "API key tidak valid. Cek Server Key & Client Key di dashboard Midtrans.",
-        mode: isProduction ? "production" : "sandbox",
+        message: "API key tidak valid. Cek Secret Key di dashboard.xendit.co.",
+        mode: isProduction ? "production" : "test",
       };
     }
 
@@ -48,26 +49,30 @@ export async function testMidtransConnection(settings: Settings): Promise<{
       const err = await res.text();
       return {
         ok: false,
-        message: `Midtrans menolak: ${err.slice(0, 120)}`,
-        mode: isProduction ? "production" : "sandbox",
+        message: `Xendit menolak: ${err.slice(0, 120)}`,
+        mode: isProduction ? "production" : "test",
       };
     }
 
-    const data = (await res.json()) as { token?: string };
-    if (!data.token) {
-      return { ok: false, message: "Respons Midtrans tidak berisi token.", mode: isProduction ? "production" : "sandbox" };
+    const data = (await res.json()) as { invoice_url?: string };
+    if (!data.invoice_url) {
+      return {
+        ok: false,
+        message: "Respons Xendit tidak berisi invoice URL.",
+        mode: isProduction ? "production" : "test",
+      };
     }
 
     return {
       ok: true,
-      message: `Terhubung (${isProduction ? "Production" : "Sandbox"}). Snap token berhasil dibuat.`,
-      mode: isProduction ? "production" : "sandbox",
+      message: `Terhubung (${isProduction ? "Production" : "Test"}). Invoice berhasil dibuat.`,
+      mode: isProduction ? "production" : "test",
     };
   } catch {
     return {
       ok: false,
-      message: "Gagal menghubungi Midtrans. Cek koneksi internet.",
-      mode: isProduction ? "production" : "sandbox",
+      message: "Gagal menghubungi Xendit. Cek koneksi internet.",
+      mode: isProduction ? "production" : "test",
     };
   }
 }
@@ -116,7 +121,7 @@ export async function testWhatsAppConnection(
         headers: { Authorization: apiKey, "Content-Type": "application/json" },
         body: JSON.stringify({
           target: testPhone.trim(),
-          message: "Tes koneksi KelolaKos berhasil ✓ Reminder tagihan kos siap dipakai.",
+          message: "Tes koneksi KosKit berhasil ✓ Reminder tagihan kos siap dipakai.",
           countryCode: "62",
         }),
       });

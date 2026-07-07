@@ -1,6 +1,8 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { createDefaultSettings, migrateSettings, trialEndDateFromNow } from "./settings";
+import { assignInitialPlan } from "./subscription";
+import { countUsers } from "./users-store";
 import type { Database, Payment, Property, Room, Tenant } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -57,7 +59,9 @@ function migrateDb(raw: Partial<Database>): Database {
       ...p,
       lateFee: p.lateFee ?? 0,
       proofPhotoUrl: p.proofPhotoUrl ?? null,
-      midtransOrderId: p.midtransOrderId ?? null,
+      paymentOrderId: p.paymentOrderId ?? (p as { midtransOrderId?: string | null }).midtransOrderId ?? null,
+      waBillSentAt: p.waBillSentAt ?? null,
+      waReminderSentAt: p.waReminderSentAt ?? null,
     })),
     utilityBills: raw.utilityBills ?? [],
     maintenanceTickets: raw.maintenanceTickets ?? [],
@@ -76,13 +80,15 @@ export async function initUserSettings(
 ): Promise<void> {
   const db = await readDb();
   if (db.settings[userId]) return;
+  const userCount = await countUsers();
+  const { plan, trialDays } = assignInitialPlan(userCount);
   db.settings[userId] = createDefaultSettings({
     businessName: data.name,
     ownerEmail: data.email,
     ownerPhone: data.phone,
-    trialEndsAt: trialEndDateFromNow(14),
-    subscriptionPlan: "trial",
+    subscriptionPlan: plan,
     subscriptionStatus: "active",
+    trialEndsAt: trialDays ? trialEndDateFromNow(trialDays) : "",
   });
   await writeDb(db);
 }

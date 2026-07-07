@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { site } from "@/lib/site";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
+import { site, supportWhatsAppUrl } from "@/lib/site";
 
 export default function DaftarPage() {
   const router = useRouter();
@@ -28,14 +29,13 @@ export default function DaftarPage() {
         website: fd.get("website"),
       }),
     });
+    const data = await res.json();
     if (!res.ok) {
-      const data = await res.json();
       setError(data.error ?? "Registrasi gagal");
       setLoading(false);
       return;
     }
-    router.push("/mulai");
-    router.refresh();
+    router.push(`/verifikasi-email?email=${encodeURIComponent(String(fd.get("email") ?? ""))}`);
   }
 
   return (
@@ -50,9 +50,9 @@ export default function DaftarPage() {
         </Link>
         <div className="relative">
           <h2 className="font-display text-3xl font-bold leading-tight text-white">
-            Kelola kos seperti<br />bisnis profesional
+            Toolkit lengkap untuk<br />kelola banyak kos
           </h2>
-          <p className="mt-4 max-w-sm text-white/50">18 modul operasional. Trial 14 hari gratis.</p>
+          <p className="mt-4 max-w-sm text-white/50">Gratis 1 kos · 50 pendaftar pertama dapat bonus Pro 30 hari</p>
         </div>
         <p className="relative text-sm text-white/30">© 2026 {site.name}</p>
       </div>
@@ -66,14 +66,24 @@ export default function DaftarPage() {
             <span className="font-extrabold">{site.name}</span>
           </Link>
           <h1 className="font-display text-2xl font-bold text-[var(--ink)]">Daftar Gratis</h1>
-          <p className="mt-1 text-sm text-[var(--muted)]">Trial 14 hari · Tanpa kartu kredit</p>
+          <p className="mt-1 text-sm text-[var(--muted)]">Gratis mulai 1 properti · Verifikasi email wajib</p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <GoogleLoginButton label="Daftar dengan Google" />
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[var(--border)]" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-[var(--paper)] px-2 text-[var(--muted)]">atau email</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
             <Input label="Nama Lengkap" name="name" required />
             <Input label="Email" name="email" type="email" required />
             <Input label="No. WhatsApp" name="phone" required />
-            <Input label="Password" name="password" type="password" minLength={6} required />
+            <Input label="Password" name="password" type="password" minLength={8} required />
             {error && <p className="text-sm font-medium text-[var(--danger)]">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Memproses..." : "Buat Akun"}
@@ -89,6 +99,11 @@ export default function DaftarPage() {
             <Link href="/syarat-ketentuan" className="underline hover:text-[var(--ink)]">Syarat & Ketentuan</Link>
             {" "}dan{" "}
             <Link href="/kebijakan-privasi" className="underline hover:text-[var(--ink)]">Kebijakan Privasi</Link>.
+          </p>
+          <p className="mt-3 text-center text-xs text-[var(--muted)]">
+            <a href={supportWhatsAppUrl()} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#25D366] hover:underline">
+              Tanya admin via WhatsApp
+            </a>
           </p>
         </div>
       </div>

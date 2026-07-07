@@ -1,10 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 import { getPaymentForBayar, getSettingsForPayment } from "@/lib/queries";
-import { midtransConfigured } from "@/lib/settings";
-import { simulatePaymentSuccess } from "@/lib/midtrans";
+import { xenditConfigured, xenditModeLabel } from "@/lib/settings";
+import { simulatePaymentSuccess } from "@/lib/xendit";
 import { formatMonthYear, formatRupiah } from "@/lib/utils";
 import { QRCode } from "@/components/ui/QRCode";
-import { MidtransSnap } from "@/components/MidtransSnap";
+import { XenditPay } from "@/components/XenditPay";
 
 export default async function BayarPage({
   params,
@@ -19,7 +19,7 @@ export default async function BayarPage({
   if (!payment) notFound();
 
   const settings = await getSettingsForPayment(paymentId);
-  const hasMidtrans = midtransConfigured(settings);
+  const hasXendit = xenditConfigured(settings);
 
   if (success === "1" && payment.status !== "lunas") {
     await simulatePaymentSuccess(paymentId);
@@ -28,7 +28,7 @@ export default async function BayarPage({
 
   const total = payment.amount + payment.lateFee;
   const isDone = payment.status === "lunas";
-  const qrSeed = payment.midtransOrderId ?? payment.id;
+  const qrSeed = payment.paymentOrderId ?? payment.id;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--paper)] p-6">
@@ -36,14 +36,14 @@ export default async function BayarPage({
         <div className="bg-[var(--ink)] px-8 py-5 text-white">
           <p className="text-xs font-medium text-white/50">Pembayaran Sewa</p>
           <p className="font-bold">{payment.room.property.name}</p>
-          {!hasMidtrans && (
+          {!hasXendit && (
             <span className="mt-2 inline-block rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">
               Mode Demo
             </span>
           )}
-          {hasMidtrans && (
+          {hasXendit && (
             <span className="mt-2 inline-block rounded-full bg-[var(--success)]/20 px-2 py-0.5 text-[10px] font-bold text-[var(--success)]">
-              Midtrans {settings.midtransIsProduction ? "Production" : "Sandbox"}
+              Xendit {xenditModeLabel(settings)}
             </span>
           )}
         </div>
@@ -71,25 +71,25 @@ export default async function BayarPage({
                 </div>
               </div>
 
-              {!hasMidtrans && (
+              {!hasXendit && (
                 <div className="mt-6 flex flex-col items-center rounded-xl border-2 border-dashed border-[var(--border)] p-6">
                   <QRCode seed={qrSeed} size={168} />
                   <p className="mt-4 text-center text-sm font-semibold text-[var(--ink)]">Preview QR (demo)</p>
-                  <p className="text-xs text-[var(--muted)]">Aktifkan Midtrans Snap untuk QRIS asli</p>
+                  <p className="text-xs text-[var(--muted)]">Aktifkan Xendit untuk QRIS asli</p>
                 </div>
               )}
 
-              {hasMidtrans && (
+              {hasXendit && (
                 <div className="mt-6 rounded-xl bg-[var(--teal-soft)] p-4 text-sm text-[var(--teal)]">
-                  <p className="font-bold">Pembayaran via Midtrans Snap</p>
-                  <p className="mt-1 text-xs opacity-80">QRIS · GoPay · ShopeePay · Transfer Bank</p>
+                  <p className="font-bold">Pembayaran via Xendit</p>
+                  <p className="mt-1 text-xs opacity-80">QRIS · E-Wallet · Transfer Bank</p>
                 </div>
               )}
 
-              <MidtransSnap paymentId={paymentId} isSimulated={!hasMidtrans} amount={total} />
+              <XenditPay paymentId={paymentId} isSimulated={!hasXendit} amount={total} />
 
               <p className="mt-4 text-center font-mono text-[10px] text-[var(--muted)]">
-                {payment.midtransOrderId ?? `ORDER-${payment.id.slice(0, 8)}`}
+                {payment.paymentOrderId ?? `ORDER-${payment.id.slice(0, 8)}`}
               </p>
             </>
           )}

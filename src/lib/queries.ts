@@ -1,6 +1,7 @@
 import { getSessionUserId } from "./auth";
-import { getUserSettings, getSettingsForPayment as resolvePaymentSettings } from "./settings";
-import { enrichPayments, readDb } from "./store";
+import { getUserSettings, setUserSettings, getSettingsForPayment as resolvePaymentSettings } from "./settings";
+import { resolveSubscriptionExpiry } from "./subscription";
+import { enrichPayments, readDb, writeDb } from "./store";
 import type { Database } from "./types";
 import type { PropertyWithRooms } from "./store";
 
@@ -326,7 +327,14 @@ export async function getNotifications() {
 export async function getSettings() {
   const db = await readDb();
   const userId = await getSessionUserId();
-  return getUserSettings(db, userId);
+  let settings = getUserSettings(db, userId);
+  const resolved = resolveSubscriptionExpiry(settings);
+  if (resolved.changed) {
+    setUserSettings(db, userId, resolved.settings);
+    await writeDb(db);
+    settings = resolved.settings;
+  }
+  return settings;
 }
 
 export async function getSettingsForPayment(paymentId: string) {
@@ -461,7 +469,7 @@ export async function getOnboardingStatus() {
   const hasRoom = db.rooms.some((r) => pids.has(r.propertyId));
   const hasTenant = db.tenants.some((t) => roomIds.has(t.roomId) && t.isActive);
   const hasPayment = db.payments.some((p) => roomIds.has(p.roomId));
-  const hasSettings = !!userSettings.appUrl?.trim() || midtransOrWhatsappConfigured(userSettings);
+  const hasSettings = !!userSettings.appUrl?.trim() || xenditOrWhatsappConfigured(userSettings);
   const steps = [
     { id: "property", label: "Tambah properti", done: hasProperty, href: "/properti" },
     { id: "room", label: "Tambah kamar", done: hasRoom, href: "/kamar" },
@@ -479,9 +487,9 @@ export async function getOnboardingStatus() {
   };
 }
 
-function midtransOrWhatsappConfigured(settings: import("./types").Settings): boolean {
+function xenditOrWhatsappConfigured(settings: import("./types").Settings): boolean {
   return (
-    (!!settings.midtransServerKey?.trim() && !!settings.midtransClientKey?.trim()) ||
+    !!settings.xenditSecretKey?.trim() ||
     !!settings.whatsappApiKey?.trim()
   );
 }

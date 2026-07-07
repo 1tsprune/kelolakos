@@ -74,7 +74,7 @@ export default async function MulaiPage() {
         <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
           <li>· Isi URL aplikasi & integrasi di Pengaturan — semua lewat web, tanpa edit env</li>
           <li>· Set target pendapatan di Pengaturan untuk tracking bulanan</li>
-          <li>· Aktifkan Fonnte & Midtrans di Pengaturan untuk bayar & reminder otomatis</li>
+          <li>· Aktifkan Fonnte & Xendit di Pengaturan untuk bayar & reminder otomatis</li>
           <li>· Bagikan portal link ke penyewa supaya mereka bayar sendiri</li>
         </ul>
       </Card>

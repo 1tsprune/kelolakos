@@ -1,6 +1,6 @@
-# KelolaKos
+# KosKit
 
-**Aplikasi manajemen kos & kontrakan Indonesia** — tagihan otomatis, portal penyewa, pembayaran QRIS, reminder WhatsApp, dan laporan keuangan dalam satu dashboard.
+**Toolkit manajemen kos & kontrakan Indonesia** — tagihan otomatis, portal penyewa, pembayaran QRIS, reminder WhatsApp, dan laporan keuangan dalam satu dashboard.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
@@ -10,30 +10,74 @@
 
 ## Tentang
 
-**KelolaKos** membantu pemilik kos mengelola operasional harian tanpa spreadsheet: catat penyewa, generate tagihan bulanan, ingatkan lewat WhatsApp, terima bayar QRIS via Midtrans, dan export laporan PDF/CSV.
+**KosKit** membantu pemilik kos mengelola operasional harian tanpa spreadsheet: catat penyewa, generate tagihan bulanan, ingatkan lewat WhatsApp, terima bayar QRIS via Xendit, dan export laporan PDF/CSV.
 
 | | |
 |---|---|
-| **Nama produk** | KelolaKos |
-| **Domain** | [kelolakos.id](https://kelolakos.id) |
+| **Nama produk** | KosKit |
+| **Domain** | `koskit.id` / set via `NEXT_PUBLIC_SITE_URL` |
 | **Target user** | Pemilik kos, pengelola kost putra/putri, investor properti di Indonesia |
-| **Model bisnis** | SaaS langganan bulanan (Starter / Pro / Business) |
+| **Model bisnis** | SaaS langganan bulanan (Gratis / Pro / Business) |
 
 Landing page tersedia dalam **Bahasa Indonesia** dan **English** (toggle ID/EN di navbar).
+
+> **Brand:** KosKit — deploy ke `koskit.id` atau domain kamu (`NEXT_PUBLIC_SITE_URL`).
 
 ---
 
 ## Fitur utama
 
 - **Multi-properti** — kelola banyak kos dari satu akun
-- **Tagihan & pembayaran** — generate bulanan, status lunas/telat, denda
-- **Portal penyewa** — link unik per penyewa, bayar QRIS sendiri
-- **WhatsApp** — reminder massal via Fonnte atau mode manual wa.me
-- **Midtrans Snap** — QRIS, GoPay, ShopeePay (BYOK — pemilik kos pakai akun sendiri)
+- **Tagihan & pembayaran** — generate bulanan, status lunas/telat, denda otomatis
+- **Portal penyewa** — link unik per penyewa (per kamar), cek tagihan & bayar QRIS sendiri
+- **WhatsApp otomatis** — kirim link portal saat penyewa baru, reminder H-X & notifikasi jatuh tempo via Fonnte
+- **Xendit Invoice** — QRIS, e-wallet, transfer bank (BYOK — pemilik kos pakai akun sendiri)
 - **Kalender** — jatuh tempo sewa, kontrak habis, utilitas
 - **Keuangan** — pengeluaran, utilitas listrik/air, laporan PDF & CSV
 - **Operasional** — tiket perbaikan, inventaris kamar, daftar tunggu, broadcast
-- **Keamanan** — isolasi data per akun, rate limit login/register, webhook signature
+- **Keamanan** — isolasi data per akun, CSRF, rate limit login/register, verifikasi email
+- **SEO** — halaman `/aplikasi-manajemen-kos`, sitemap, structured data (JSON-LD)
+
+---
+
+## Paket langganan
+
+| Paket | Properti | Kamar | Harga |
+|-------|----------|-------|-------|
+| **Gratis** | 1 | 3 | Rp 0 |
+| **Early Adopter** | 5 | 50 | 30 hari trial (50 slot pertama) |
+| **Pro** | 5 | 50 | Rp 199rb/bulan |
+| **Business** | ∞ | ∞ | Rp 399rb/bulan |
+
+---
+
+## Portal penyewa
+
+Setiap penyewa punya **link unik** — bukan login, bukan berdasarkan nama.
+
+```
+https://koskit.id/portal/portal_tenant_andi_xxxxx
+```
+
+- Satu orang di 2 kos = 2 link berbeda (terikat kamar + token)
+- Salin link: **Penyewa → detail penyewa → Portal Penyewa**
+- Otomatis dikirim via WA saat penyewa baru ditambah (jika reminder otomatis aktif)
+
+---
+
+## Reminder & tagihan otomatis
+
+Aktifkan di **Pengaturan** → *"Aktifkan otomatis: generate tagihan, kirim portal & reminder WA"*.
+
+| Kapan | Apa yang terjadi |
+|-------|------------------|
+| Penyewa baru | WA selamat datang + link portal |
+| Setiap hari (cron) | Generate tagihan bulan berjalan (jika belum ada) |
+| H-X sebelum jatuh tempo | Reminder WA + link portal & bayar |
+| Hari jatuh tempo | Notifikasi tagihan WA + link portal & bayar |
+
+**Syarat kirim otomatis:** Fonnte API key terhubung (bukan mode manual).  
+**Cron production:** set `CRON_SECRET` → `GET /api/cron/reminders` (Vercel: jam 07:00 via `vercel.json`).
 
 ---
 
@@ -41,11 +85,12 @@ Landing page tersedia dalam **Bahasa Indonesia** dan **English** (toggle ID/EN d
 
 - **Framework:** Next.js 16 (App Router)
 - **UI:** React 19, Tailwind CSS v4
-- **Auth:** JWT session (httpOnly cookie) + bcrypt
+- **Auth:** JWT session (httpOnly cookie) + bcrypt + Google OAuth
 - **Storage:** Supabase PostgreSQL (production) atau JSON file (development)
 - **PDF:** jsPDF + jspdf-autotable
-- **Payments:** Midtrans Snap API
+- **Payments:** Xendit Invoice API
 - **WhatsApp:** Fonnte API
+- **Email:** Resend (verifikasi, forgot password, welcome)
 
 ---
 
@@ -59,7 +104,7 @@ Landing page tersedia dalam **Bahasa Indonesia** dan **English** (toggle ID/EN d
 ### Instalasi
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/kelolakos.git
+git clone https://github.com/1tsprune/kelolakos.git
 cd kelolakos
 npm install
 cp .env.example .env
@@ -77,6 +122,9 @@ openssl rand -base64 32
 npm run dev
 ```
 
+Dev server bind ke `0.0.0.0` — akses dari HP di WiFi yang sama: `http://<IP-LAN>:3000`.  
+Tambahkan IP LAN di `ALLOWED_DEV_ORIGINS` (lihat `next.config.ts`) jika konten tidak load di HP.
+
 Buka [http://localhost:3000](http://localhost:3000)
 
 **Akun demo** (auto-seed saat pertama jalan):
@@ -85,7 +133,7 @@ Buka [http://localhost:3000](http://localhost:3000)
 |-------|----------|
 | `budi@kosmelati.id` | `password123` |
 
-User baru dapat **trial 14 hari** otomatis saat registrasi.
+**Portal demo:** [http://localhost:3000/portal/portal_andi_demo](http://localhost:3000/portal/portal_andi_demo)
 
 ### Production
 
@@ -103,22 +151,24 @@ Lihat [docs/DEPLOY.md](docs/DEPLOY.md) untuk checklist deploy lengkap.
 ```
 src/
 ├── app/
-│   ├── (app)/          # Dashboard & modul (auth required)
-│   ├── api/            # API routes
-│   ├── daftar/         # Registrasi
-│   ├── masuk/          # Login
-│   └── page.tsx        # Landing page
+│   ├── (app)/              # Dashboard & modul (auth required)
+│   ├── api/
+│   │   ├── xendit/         # Invoice + webhook pembayaran penyewa
+│   │   ├── cron/           # Reminder & tagihan otomatis
+│   │   └── subscription/   # Billing langganan SaaS
+│   ├── aplikasi-manajemen-kos/  # Landing SEO
+│   ├── portal/[token]/     # Portal penyewa (publik)
+│   └── page.tsx            # Landing page
 ├── components/
-│   └── landing/        # Landing + i18n (ID/EN)
+│   └── landing/            # Landing + i18n (ID/EN)
 ├── lib/
-│   ├── actions.ts      # Server actions
-│   ├── auth.ts         # Session & users
-│   ├── store.ts        # JSON database
-│   ├── settings.ts     # Per-user settings
-│   └── site.ts         # Branding & SEO
+│   ├── xendit.ts           # Xendit BYOK + billing
+│   ├── reminder-scheduler.ts
+│   ├── subscription.ts     # Limit paket
+│   └── seo.ts              # Metadata & JSON-LD
 data/
-├── koskit.json         # Database seed
-└── users.json          # User accounts (auto-created)
+├── koskit.json             # Database seed (dev)
+└── users.json              # User accounts (auto-created)
 ```
 
 ---
@@ -129,12 +179,27 @@ Semua integrasi bisnis dikonfigurasi lewat **Pengaturan** di dashboard — tanpa
 
 | Integrasi | Cara setup |
 |-----------|------------|
-| **URL aplikasi** | Domain production untuk link bayar & webhook |
-| **Midtrans** | Server Key + Client Key + webhook URL |
+| **URL aplikasi** | Domain production untuk link portal, bayar & webhook |
+| **Xendit** | Secret API Key + webhook token → `/api/xendit/webhook` |
 | **WhatsApp** | API key Fonnte, atau mode manual wa.me |
-| **Tagihan** | Tanggal jatuh tempo, denda, tarif listrik/air |
+| **Tagihan** | Tanggal jatuh tempo, reminder H-X, denda, tarif listrik/air |
+| **Reminder otomatis** | Centang di Pengaturan + `CRON_SECRET` di production |
 
-Variabel environment: lihat [.env.example](.env.example)
+### Environment variables
+
+| Variable | Wajib | Keterangan |
+|----------|-------|------------|
+| `AUTH_SECRET` | ✅ | Session JWT |
+| `NEXT_PUBLIC_SITE_URL` | ✅ | URL publik (tanpa trailing slash) |
+| `CRON_SECRET` | ✅* | Reminder otomatis (production) |
+| `BILLING_XENDIT_SECRET_KEY` | ✅* | Billing upgrade paket SaaS |
+| `BILLING_XENDIT_WEBHOOK_TOKEN` | ✅* | Webhook billing SaaS |
+| `RESEND_API_KEY` | ✅* | Email verifikasi & forgot password |
+| `GOOGLE_CLIENT_ID` / `SECRET` | opsional | Login dengan Google |
+| `DATABASE_URL` | opsional | Postgres production |
+| `ALLOWED_DEV_ORIGINS` | opsional | IP LAN untuk dev di HP |
+
+Lihat [.env.example](.env.example) untuk daftar lengkap.
 
 ---
 
@@ -148,15 +213,14 @@ Set `DATABASE_URL` di `.env` → app otomatis pakai **PostgreSQL**. Tanpa itu, f
 npm run db:migrate   # impor data dari koskit.json
 ```
 
-Lihat [`docs/DEPLOY.md`](docs/DEPLOY.md) untuk detail connection string & pooler.
-
 ---
 
 ## Scripts
 
 | Command | Keterangan |
 |---------|------------|
-| `npm run dev` | Development server |
+| `npm run dev` | Dev server (`0.0.0.0:3000`) |
+| `npm run dev:local` | Dev server localhost saja |
 | `npm run build` | Build production |
 | `npm run start` | Jalankan build |
 | `npm run lint` | ESLint |
@@ -166,14 +230,16 @@ Lihat [`docs/DEPLOY.md`](docs/DEPLOY.md) untuk detail connection string & pooler
 
 ## Roadmap
 
-- [x] Landing page + Apple scroll + bilingual (ID/EN)
+- [x] Landing page + scroll story + bilingual (ID/EN)
 - [x] Multi-user SaaS + tenant isolation
-- [x] Trial 14 hari + banner expiry
-- [x] Laporan PDF polished
-- [x] Forgot password + email (Resend)
-- [x] Halaman legal (privasi & syarat)
+- [x] Portal penyewa + link unik per kamar
+- [x] Xendit Invoice (ganti Midtrans)
+- [x] Reminder WA otomatis + link portal di pesan
+- [x] SEO: keyword-first meta, `/aplikasi-manajemen-kos`, JSON-LD
+- [x] Verifikasi email + Google OAuth
+- [x] Billing langganan via Xendit (`BILLING_XENDIT_*`)
+- [x] Limit properti/kamar per paket + Early Adopter
 - [x] PostgreSQL / Supabase adapter
-- [ ] Billing langganan Midtrans Subscription
 - [ ] Staff roles & permissions
 - [ ] Sentry error monitoring
 
@@ -181,11 +247,12 @@ Lihat [`docs/DEPLOY.md`](docs/DEPLOY.md) untuk detail connection string & pooler
 
 ## Lisensi
 
-Proprietary — © 2026 KelolaKos. All rights reserved.
+Proprietary — © 2026 KosKit. All rights reserved.
 
 ---
 
 ## Kontak
 
-- Email: [halo@kelolakos.id](mailto:halo@kelolakos.id)
-- Website: [kelolakos.id](https://kelolakos.id)
+- Email: [halo@koskit.id](mailto:halo@koskit.id)
+- WhatsApp Admin: +62 878-6352-0135
+- Website: [koskit.id](https://koskit.id)

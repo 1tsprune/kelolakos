@@ -22,7 +22,13 @@ import { StatCard } from "@/components/ui/StatCard";
 import { StatusBadge } from "@/components/StatusBadge";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { getDashboardStats, getOnboardingStatus, getSettings } from "@/lib/queries";
-import { buildPaymentReminderMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
+import { resolveAppUrl } from "@/lib/settings";
+import {
+  buildPaymentPageUrl,
+  buildPaymentReminderMessage,
+  buildTenantPortalUrl,
+  buildWhatsAppUrl,
+} from "@/lib/whatsapp";
 import { formatDate, formatMonthYear, formatRupiah } from "@/lib/utils";
 
 export default async function DashboardPage() {
@@ -35,6 +41,7 @@ export default async function DashboardPage() {
   if (!settings.onboardingCompleted && onboarding.percent < 40) {
     redirect("/mulai");
   }
+  const appUrl = resolveAppUrl(settings);
   const targetPct = stats.revenueTarget > 0 ? Math.min(100, Math.round((stats.collected / stats.revenueTarget) * 100)) : 0;
   const collectionRate = stats.paymentsThisMonth.length > 0
     ? Math.round((stats.paymentsThisMonth.filter((p) => p.status === "lunas").length / stats.paymentsThisMonth.length) * 100)
@@ -165,10 +172,17 @@ export default async function DashboardPage() {
             ) : (
               stats.paymentsThisMonth.slice(0, 5).map((payment) => {
                 const waUrl = buildWhatsAppUrl(payment.tenant.phone, buildPaymentReminderMessage({
-                  tenantName: payment.tenant.name, tenantPhone: payment.tenant.phone,
-                  propertyName: payment.room.property.name, roomNumber: payment.room.number,
-                  amount: payment.amount, periodMonth: payment.periodMonth, periodYear: payment.periodYear,
-                  dueDate: payment.dueDate, ownerName: payment.room.property.ownerName,
+                  tenantName: payment.tenant.name,
+                  propertyName: payment.room.property.name,
+                  roomNumber: payment.room.number,
+                  amount: payment.amount + payment.lateFee,
+                  periodMonth: payment.periodMonth,
+                  periodYear: payment.periodYear,
+                  dueDate: payment.dueDate,
+                  ownerName: payment.room.property.ownerName,
+                  portalUrl: buildTenantPortalUrl(appUrl, payment.tenant.portalToken),
+                  paymentUrl: buildPaymentPageUrl(appUrl, payment.id),
+                  variant: "reminder",
                 }));
                 return (
                   <div key={payment.id} className="flex items-center justify-between gap-4 px-5 py-4">

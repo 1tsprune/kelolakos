@@ -1,9 +1,12 @@
 import { LegalLayout } from "@/components/LegalLayout";
+import { buildPageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 
-export const metadata = {
-  title: `Kebijakan Privasi — ${site.name}`,
-};
+export const metadata = buildPageMetadata({
+  title: "Kebijakan Privasi",
+  description: `Kebijakan privasi ${site.name} — aplikasi manajemen kos. Data apa yang dikumpulkan dan bagaimana kami melindungi data pemilik kos & penyewa.`,
+  path: "/kebijakan-privasi",
+});
 
 export default function KebijakanPrivasiPage() {
   return (
@@ -21,7 +24,7 @@ export default function KebijakanPrivasiPage() {
       </ul>
 
       <h2 className="pt-4 text-lg font-bold">2. Penggunaan data</h2>
-      <p>Data digunakan untuk menjalankan layanan manajemen kos, menghasilkan laporan, mengirim reminder, dan memproses pembayaran melalui integrasi pihak ketiga (Midtrans, Fonnte) yang kamu konfigurasi sendiri.</p>
+      <p>Data digunakan untuk menjalankan layanan manajemen kos, menghasilkan laporan, mengirim reminder, dan memproses pembayaran melalui integrasi pihak ketiga (Xendit, Fonnte) yang kamu konfigurasi sendiri.</p>
 
       <h2 className="pt-4 text-lg font-bold">3. Isolasi data</h2>
       <p>Setiap akun pemilik kos terpisah. Data kamu tidak dibagikan ke pemilik kos lain. Kami tidak menjual data penyewa.</p>

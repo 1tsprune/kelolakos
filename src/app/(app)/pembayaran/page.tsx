@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { generateMonthlyPayments, markPaymentPaid } from "@/lib/actions";
-import { getPayments } from "@/lib/queries";
-import { buildPaymentReminderMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
+import { getPayments, getSettings } from "@/lib/queries";
+import { resolveAppUrl } from "@/lib/settings";
+import {
+  buildPaymentPageUrl,
+  buildPaymentReminderMessage,
+  buildTenantPortalUrl,
+  buildWhatsAppUrl,
+} from "@/lib/whatsapp";
 import { formatDate, formatMonthYear, formatRupiah } from "@/lib/utils";
 import { Card, PageTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -23,7 +29,8 @@ export default async function PembayaranPage({
   const now = new Date();
   const month = Number(params.bulan) || now.getMonth() + 1;
   const year = Number(params.tahun) || now.getFullYear();
-  const payments = await getPayments(month, year);
+  const [payments, settings] = await Promise.all([getPayments(month, year), getSettings()]);
+  const appUrl = resolveAppUrl(settings);
   const total = payments.reduce((s, p) => s + p.amount, 0);
   const collected = payments.filter((p) => p.status === "lunas").reduce((s, p) => s + p.amount, 0);
 
@@ -89,10 +96,17 @@ export default async function PembayaranPage({
           >
             {payments.map((payment) => {
               const waUrl = buildWhatsAppUrl(payment.tenant.phone, buildPaymentReminderMessage({
-                tenantName: payment.tenant.name, tenantPhone: payment.tenant.phone,
-                propertyName: payment.room.property.name, roomNumber: payment.room.number,
-                amount: payment.amount, periodMonth: payment.periodMonth, periodYear: payment.periodYear,
-                dueDate: payment.dueDate, ownerName: payment.room.property.ownerName,
+                tenantName: payment.tenant.name,
+                propertyName: payment.room.property.name,
+                roomNumber: payment.room.number,
+                amount: payment.amount + payment.lateFee,
+                periodMonth: payment.periodMonth,
+                periodYear: payment.periodYear,
+                dueDate: payment.dueDate,
+                ownerName: payment.room.property.ownerName,
+                portalUrl: buildTenantPortalUrl(appUrl, payment.tenant.portalToken),
+                paymentUrl: buildPaymentPageUrl(appUrl, payment.id),
+                variant: "reminder",
               }));
               return (
                 <DataRow key={payment.id}>

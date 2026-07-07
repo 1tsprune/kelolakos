@@ -1,10 +1,11 @@
 {
-  "name": "kelolakos",
+  "name": "koskit",
   "version": "0.1.0",
   "private": true,
-  "description": "KelolaKos — aplikasi manajemen kos & kontrakan Indonesia (SaaS)",
+  "description": "KosKit — toolkit manajemen kos & kontrakan Indonesia (SaaS)",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 0.0.0.0",
+    "dev:local": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
